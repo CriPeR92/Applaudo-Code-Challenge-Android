@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Applaudo Code Challenge Android</string>
+    <string name="unexpected_error">Unexpected Error.</string>
+    <string name="search_hint">search your series</string>
+    <string name="search">search</string>
+    <string name="favorites">favorites</string>
 </resources>
