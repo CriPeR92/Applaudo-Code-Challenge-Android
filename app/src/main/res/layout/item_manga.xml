@@ -9,7 +9,7 @@
 
         <variable
             name="manga"
-            type="com.example.applaudocodechallengeandroid.model.MangaAttributes" />
+            type="com.example.applaudocodechallengeandroid.model.Manga" />
 
         <variable
             name="viewModel"
@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            bind:imageUrl="@{manga.posterImage.small}"/>
+            bind:imageUrl="@{manga.attributes.posterImage.small}"/>
 
         <TextView
             android:layout_width="300dp"
@@ -41,7 +41,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@{manga.canonicalTitle}"
+            android:text="@{manga.attributes.canonicalTitle}"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/ivImage"
             app:layout_constraintStart_toStartOf="@id/ivImage"

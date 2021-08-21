@@ -33,8 +33,8 @@ interface ApiInterface {
     @GET("anime-characters")
     suspend fun getAnimeCharacters(
         @Query("include") include: String = "character",
-        @Query("animeId") id: String
-    ): Response<MainCharactersAnimeResponse>
+        @Query("filter[animeId]") id: String
+    ): Response<MainCharactersResponse>
 
     @GET
     suspend fun getNextOrBeforeAnimeEpisodes(
@@ -44,17 +44,30 @@ interface ApiInterface {
     @GET
     suspend fun getNextOrBeforeAnimeCharacters(
         @Url url: String
-    ): Response<MainCharactersAnimeResponse>
+    ): Response<MainCharactersResponse>
 
-//    @GET("chapters")
-//    suspend fun getMangaEpisodes(
-//        @Query("filter[mangaId]") id: String,
-//    ): Response<MainChaptersMangaResponse>
 
-//    @GET("manga-characters")
-//    suspend fun getMangaCharacters(
-//        @Query("include") include: String = "character",
-//        @Query("mangaId") id: String
-//    ): Response<MainCharactersMangaResponse>
+    @GET("chapters")
+    suspend fun getMangaChapters(
+        @Query("filter[mangaId]") id: String,
+    ): Response<MangaChapterResponse>
+
+    @GET("manga-characters")
+    suspend fun getMangaCharacters(
+        @Query("include") include: String = "character",
+        @Query("filter[mangaId]") id: String
+    ): Response<MainCharactersResponse>
+
+    @GET
+    suspend fun getNextOrBeforeMangaChapters(
+        @Url url: String
+    ): Response<MangaChapterResponse>
+
+    @GET
+    suspend fun getNextOrBeforeMangaCharacters(
+        @Url url: String
+    ): Response<MainCharactersResponse>
+
+
 
 }

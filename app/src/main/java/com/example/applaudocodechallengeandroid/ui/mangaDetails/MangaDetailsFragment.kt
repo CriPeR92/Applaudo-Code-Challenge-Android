@@ -1,4 +1,4 @@
-package com.example.applaudocodechallengeandroid.ui.animeDetails
+package com.example.applaudocodechallengeandroid.ui.mangaDetails
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,23 +10,28 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.applaudocodechallengeandroid.R
 import com.example.applaudocodechallengeandroid.data.repository.SharedPreferencesRepository
-import com.example.applaudocodechallengeandroid.databinding.FragmentAnimeDetailsBinding
-import com.example.applaudocodechallengeandroid.model.*
+import com.example.applaudocodechallengeandroid.databinding.FragmentMangaDetailsBinding
+import com.example.applaudocodechallengeandroid.model.Anime
+import com.example.applaudocodechallengeandroid.model.Manga
+import com.example.applaudocodechallengeandroid.ui.animeDetails.CharactersAdapter
+import com.example.applaudocodechallengeandroid.ui.animeDetails.DetailsViewModel
+import com.example.applaudocodechallengeandroid.ui.animeDetails.EpisodesAdapter
+import com.example.applaudocodechallengeandroid.ui.animeDetails.GenreAdapter
 import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class AnimeDetailsFragment : Fragment() {
+class MangaDetailsFragment : Fragment() {
 
-    private lateinit var binding: FragmentAnimeDetailsBinding
+    private lateinit var binding: FragmentMangaDetailsBinding
     private lateinit var genreAdapter: GenreAdapter
-    private lateinit var episodesAdapter: EpisodesAdapter
+    private lateinit var chapterAdapter: ChaptersAdapter
     private lateinit var charactersAdapter: CharactersAdapter
-    var sharedPreferencesRepository: SharedPreferencesRepository = SharedPreferencesRepository()
-    private val viewModel: DetailsViewModel by viewModel()
+    private var sharedPreferencesRepository: SharedPreferencesRepository = SharedPreferencesRepository()
+    private val viewModel: DetailsMangaViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.selectedAnime.value = Gson().fromJson(arguments?.getString("anime"), Anime::class.java)
+        viewModel.selectedManga.value = Gson().fromJson(arguments?.getString("manga"), Manga::class.java)
     }
 
     override fun onCreateView(
@@ -36,12 +41,12 @@ class AnimeDetailsFragment : Fragment() {
     ): View {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_anime_details,
+            R.layout.fragment_manga_details,
             container,
             false
         )
         binding.viewModel = this.viewModel
-        binding.anime = viewModel.selectedAnime.value?.attributes
+        binding.manga = viewModel.selectedManga.value?.attributes
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -58,13 +63,13 @@ class AnimeDetailsFragment : Fragment() {
             genreAdapter.notifyDataSetChanged()
         })
 
-        viewModel.episodesResponse.observe(binding.lifecycleOwner!!, {
-            viewModel.hideProgressBarEpisodes.postValue(false)
-            episodesAdapter = EpisodesAdapter(
+        viewModel.chaptersResponse.observe(binding.lifecycleOwner!!, {
+            viewModel.hideProgressBarChapter.postValue(false)
+            chapterAdapter = ChaptersAdapter(
                 it.data ?: ArrayList()
             )
-            binding.episodesAdapter = episodesAdapter
-            episodesAdapter.notifyDataSetChanged()
+            binding.chapterAdapter = chapterAdapter
+            chapterAdapter.notifyDataSetChanged()
         })
 
         viewModel.charactersResponse.observe(binding.lifecycleOwner!!, {
@@ -76,10 +81,12 @@ class AnimeDetailsFragment : Fragment() {
             charactersAdapter.notifyDataSetChanged()
         })
 
-        viewModel.addFavorites.observe(binding.lifecycleOwner!!, Observer {
+        viewModel.addFavorites.observe(binding.lifecycleOwner!!, {
             if (it) {
-                sharedPreferencesRepository.saveFavorite(context = this.context,
-                    anime = viewModel.selectedAnime.value, manga = null)
+                sharedPreferencesRepository.saveFavorite(
+                    context = this.context,
+                    manga = viewModel.selectedManga.value, anime = null
+                )
             }
         })
 
@@ -95,12 +102,12 @@ class AnimeDetailsFragment : Fragment() {
             binding.genreAdapter = genreAdapter
         }
 
-        if (!::episodesAdapter.isInitialized) {
-            viewModel.getEpisodes()
-            episodesAdapter = EpisodesAdapter(ArrayList())
-            binding.episodesAdapter = episodesAdapter
+        if (!::chapterAdapter.isInitialized) {
+            viewModel.getChapters()
+            chapterAdapter = ChaptersAdapter(ArrayList())
+            binding.chapterAdapter = chapterAdapter
         } else {
-            binding.episodesAdapter = episodesAdapter
+            binding.chapterAdapter = chapterAdapter
         }
 
         if (!::charactersAdapter.isInitialized) {

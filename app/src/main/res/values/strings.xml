@@ -10,15 +10,21 @@
     <string name="main_title">Main Title</string>
     <string name="canonical_title">Canonical Title</string>
     <string name="type">Type</string>
+    <string name="no_title">No title</string>
     <string name="year">Year</string>
     <string name="genres">Genres</string>
     <string name="average_rating">Average Rating</string>
     <string name="age_rating">Age Rating</string>
     <string name="episode_duration">Episode Duration</string>
+    <string name="volume_count">Volume Count</string>
     <string name="airing_status">Airing Status</string>
     <string name="synopsis">Synopsis</string>
     <string name="episodes_list">Episodes List</string>
+    <string name="chapters_list">Chapters List</string>
     <string name="characters_list">Characters List</string>
     <string name="next"><b><i><u>Next</u></i></b></string>
     <string name="back"><b><i><u>Back</u></i></b></string>
+    <string name="added">Added to favorites</string>
+    <string name="removed">Removed from favorites</string>
+    <string name="inList">Already in favorites</string>
 </resources>

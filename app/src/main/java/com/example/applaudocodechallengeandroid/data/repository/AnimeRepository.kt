@@ -4,7 +4,7 @@ import com.example.applaudocodechallengeandroid.data.retrofit.ApiInterface
 import com.example.applaudocodechallengeandroid.model.AnimeEpisodesResponse
 import com.example.applaudocodechallengeandroid.model.GenreResponse
 import com.example.applaudocodechallengeandroid.model.MainAnimeResponse
-import com.example.applaudocodechallengeandroid.model.MainCharactersAnimeResponse
+import com.example.applaudocodechallengeandroid.model.MainCharactersResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -14,7 +14,7 @@ interface CallbackAnime {
 }
 
 interface CallbackAnimeCharacter {
-    fun onSuccessAnimeCharacter(response: MainCharactersAnimeResponse)
+    fun onSuccessAnimeCharacter(response: MainCharactersResponse)
     fun onFailed(errorResponse: String)
 }
 
@@ -86,6 +86,21 @@ class AnimeRepository(private val api: ApiInterface) {
                 callbackAnimeEpisode.onSuccessAnimeEpisode(response.body()!!)
             } else {
                 callbackAnimeEpisode.onFailed("error")
+            }
+        }
+    }
+
+    suspend fun getAnimeCharactersBackOrNext(
+        callbackAnimeCharacter: CallbackAnimeCharacter,
+        url: String
+    ) {
+        coroutineScope {
+            val responseDeferred = async { api.getNextOrBeforeAnimeCharacters(url = url) }
+            val response = responseDeferred.await()
+            if (response.isSuccessful) {
+                callbackAnimeCharacter.onSuccessAnimeCharacter(response.body()!!)
+            } else {
+                callbackAnimeCharacter.onFailed("error")
             }
         }
     }

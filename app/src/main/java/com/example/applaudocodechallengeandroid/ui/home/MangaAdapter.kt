@@ -21,7 +21,7 @@ class MangaAdapter(private var fragment: HomeFragment, var list: ArrayList<Manga
 
     override fun onBindViewHolder(holder: MangaAdapterViewHolder, position: Int) {
         holder.binding.viewModel = homeViewModel
-        holder.binding.manga = list[position].attributes
+        holder.binding.manga = list[position]
     }
 
     class MangaAdapterViewHolder(val binding: ItemMangaBinding) :

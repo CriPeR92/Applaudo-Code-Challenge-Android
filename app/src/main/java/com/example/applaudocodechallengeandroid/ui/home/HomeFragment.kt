@@ -82,7 +82,7 @@ class HomeFragment : Fragment() {
                     "manga" to Gson().toJson(it),
                 )
             findNavController().navigate(
-                R.id.action_homeFragment_to_detailsFragment,
+                R.id.action_homeFragment_to_mangaDetailsFragment,
                 bundle
             )
         })

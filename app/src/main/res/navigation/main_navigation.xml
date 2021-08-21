@@ -11,17 +11,27 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-        android:id="@+id/action_homeFragment_to_detailsFragment"
-        app:destination="@id/detailsFragment"
-        app:popUpTo="@id/homeFragment"
-        app:popUpToInclusive="false" />
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/animeDetailsFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_homeFragment_to_mangaDetailsFragment"
+            app:destination="@id/mangaDetailsFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
-        android:id="@+id/detailsFragment"
+        android:id="@+id/mangaDetailsFragment"
+        android:name="com.example.applaudocodechallengeandroid.ui.mangaDetails.MangaDetailsFragment"
+        android:label="fragment_manga_details"
+        tools:layout="@layout/fragment_manga_details"/>
+
+    <fragment
+        android:id="@+id/animeDetailsFragment"
         android:name="com.example.applaudocodechallengeandroid.ui.animeDetails.AnimeDetailsFragment"
-        android:label="fragment_details"
-        tools:layout="@layout/fragment_anime_details">
-    </fragment>
+        android:label="fragment_anime_details"
+        tools:layout="@layout/fragment_anime_details"/>
 
 </navigation>

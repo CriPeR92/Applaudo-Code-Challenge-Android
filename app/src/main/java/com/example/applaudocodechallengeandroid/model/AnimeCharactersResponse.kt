@@ -2,22 +2,22 @@ package com.example.applaudocodechallengeandroid.model
 
 import com.google.gson.annotations.SerializedName
 
-class MainCharactersAnimeResponse(
+class MainCharactersResponse(
     @SerializedName("data") var data: ArrayList<Anime>?,
     @SerializedName("meta") var meta: Meta?,
     @SerializedName("links") var links: Links?,
-    @SerializedName("included") var included: ArrayList<AnimeCharacter>?,
+    @SerializedName("included") var included: ArrayList<Character>?,
 )
 
-class AnimeCharacter(
+class Character(
     @SerializedName("id") var id: String?,
     @SerializedName("type") var type: String?,
     @SerializedName("links") var links: Any?,
-    @SerializedName("attributes") var attributes: AnimeCharacterAttributes?,
+    @SerializedName("attributes") var attributes: CharacterAttributes?,
     @SerializedName("relationships") var relationships: Any?,
 )
 
-class AnimeCharacterAttributes(
+class CharacterAttributes(
     @SerializedName("createdAt") var createdAt: String?,
     @SerializedName("updatedAt") var updatedAt: String?,
     @SerializedName("slug") var slug: String?,

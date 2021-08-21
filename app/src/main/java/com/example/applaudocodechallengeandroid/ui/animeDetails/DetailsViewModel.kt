@@ -1,18 +1,16 @@
 package com.example.applaudocodechallengeandroid.ui.animeDetails
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
-import com.example.applaudocodechallengeandroid.data.repository.AnimeRepository
-import com.example.applaudocodechallengeandroid.data.repository.CallbackAnimeCharacter
-import com.example.applaudocodechallengeandroid.data.repository.CallbackAnimeEpisode
-import com.example.applaudocodechallengeandroid.data.repository.CallbackGenre
+import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.Anime
 import com.example.applaudocodechallengeandroid.model.AnimeEpisodesResponse
 import com.example.applaudocodechallengeandroid.model.GenreResponse
-import com.example.applaudocodechallengeandroid.model.MainCharactersAnimeResponse
+import com.example.applaudocodechallengeandroid.model.MainCharactersResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,17 +20,13 @@ class DetailsViewModel(application: Application, private val animeRepository: An
     var selectedAnime = LiveEvent<Anime>()
     var genreResponse = LiveEvent<GenreResponse>()
     var episodesResponse = LiveEvent<AnimeEpisodesResponse>()
-    var charactersResponse = LiveEvent<MainCharactersAnimeResponse>()
+    var charactersResponse = LiveEvent<MainCharactersResponse>()
     val hideProgressGenre = MutableLiveData(false)
     val hideProgressBarEpisodes = MutableLiveData(false)
     val hideProgressBarCharacters = MutableLiveData(false)
-
-//    var animeResponse = LiveEvent<MainAnimeResponse>()
-//    var mangaResponse = LiveEvent<MainMangaResponse>()
-//    val hideProgressBarAnime = MutableLiveData(false)
-//    val hideProgressBarManga = MutableLiveData(false)
-//    var showFavorites = LiveEvent<Boolean>()
-//    var error = LiveEvent<Error>()
+    private var prefs: SharedPreferences? = null
+    var addFavorites = LiveEvent<Boolean>()
+    var error = LiveEvent<String>()
 
     fun getGenres() {
         hideProgressGenre.postValue(true)
@@ -65,6 +59,25 @@ class DetailsViewModel(application: Application, private val animeRepository: An
         }
     }
 
+    fun getNextCharacters(action: String) {
+        if (action == "next" && charactersResponse.value?.links?.next != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                animeRepository.getAnimeCharactersBackOrNext(
+                    this@DetailsViewModel,
+                    url = charactersResponse.value?.links?.next.toString()
+                )
+            }
+        } else if(action == "back" && charactersResponse.value?.links?.prev != null){
+            viewModelScope.launch(Dispatchers.IO) {
+                animeRepository.getAnimeCharactersBackOrNext(
+                    this@DetailsViewModel,
+                    url = charactersResponse.value?.links?.prev.toString()
+                )
+            }
+        }
+    }
+
+
     fun getNextEpisodes(action: String) {
         if (action == "next" && episodesResponse.value?.links?.next != null) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -84,10 +97,9 @@ class DetailsViewModel(application: Application, private val animeRepository: An
 
     }
 
-//    fun favorites() {
-//        showFavorites.postValue(true)
-//    }
-//
+    fun addToFavorites() {
+        addFavorites.postValue(true)
+    }
 
     override fun onSuccessGenre(response: GenreResponse) {
         genreResponse.postValue(response)
@@ -97,11 +109,11 @@ class DetailsViewModel(application: Application, private val animeRepository: An
         episodesResponse.postValue(response)
     }
 
-    override fun onSuccessAnimeCharacter(response: MainCharactersAnimeResponse) {
+    override fun onSuccessAnimeCharacter(response: MainCharactersResponse) {
         charactersResponse.postValue(response)
     }
 
     override fun onFailed(errorResponse: String) {
-
+        error.postValue(errorResponse)
     }
 }

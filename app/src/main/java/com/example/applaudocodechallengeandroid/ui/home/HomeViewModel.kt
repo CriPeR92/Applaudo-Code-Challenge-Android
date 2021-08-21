@@ -23,7 +23,7 @@ class HomeViewModel(
     var mangaResponse = LiveEvent<MainMangaResponse>()
     var genreResponse = LiveEvent<GenreResponse>()
     var selectedAnime = LiveEvent<Anime>()
-    var selectedManga = LiveEvent<MangaAttributes>()
+    var selectedManga = LiveEvent<Manga>()
     val hideProgressBarAnime = MutableLiveData(false)
     val hideProgressBarManga = MutableLiveData(false)
     var showFavorites = LiveEvent<Boolean>()
@@ -71,12 +71,8 @@ class HomeViewModel(
         selectedAnime.postValue(anime)
     }
 
-    fun onClickActionManga(manga: MangaAttributes) {
-        hideProgressBarManga.postValue(true)
+    fun onClickActionManga(manga: Manga) {
         selectedManga.postValue(manga)
-//        viewModelScope.launch(Dispatchers.IO) {
-//            seasonsRepository.getSeasons(this@HomeViewModel, show.id.toString())
-//        }
     }
 
     override fun onSuccessAnime(response: MainAnimeResponse) {

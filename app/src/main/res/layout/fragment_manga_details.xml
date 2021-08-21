@@ -8,16 +8,16 @@
         <import type="android.view.View" />
 
         <variable
-            name="anime"
-            type="com.example.applaudocodechallengeandroid.model.AnimeAttributes" />
+            name="manga"
+            type="com.example.applaudocodechallengeandroid.model.MangaAttributes" />
 
         <variable
             name="genreAdapter"
             type="com.example.applaudocodechallengeandroid.ui.animeDetails.GenreAdapter" />
 
         <variable
-            name="episodesAdapter"
-            type="com.example.applaudocodechallengeandroid.ui.animeDetails.EpisodesAdapter" />
+            name="chapterAdapter"
+            type="com.example.applaudocodechallengeandroid.ui.mangaDetails.ChaptersAdapter" />
 
         <variable
             name="charactersAdapter"
@@ -25,7 +25,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.applaudocodechallengeandroid.ui.animeDetails.DetailsViewModel" />
+            type="com.example.applaudocodechallengeandroid.ui.mangaDetails.DetailsMangaViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,7 +71,7 @@
                         android:layout_height="match_parent"
                         android:adjustViewBounds="true"
                         android:scaleType="fitXY"
-                        bind:imageUrl="@{anime.posterImage.large}" />
+                        bind:imageUrl="@{manga.posterImage.large}" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.titles.en_jp}" />
+                            android:text="@{manga.titles.en_jp}" />
 
 
                         <TextView
@@ -102,7 +102,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.canonicalTitle}" />
+                            android:text="@{manga.canonicalTitle}" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.showType + `,  ` + anime.episodeCount + ` episodes`}" />
+                            android:text="@{manga.mangaType + `,  ` + manga.chapterCount + ` chapters`}" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.startDate + `  ` + anime.endDate}" />
+                            android:text="@{manga.startDate + `  ` + manga.endDate}" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -181,19 +181,19 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.averageRating}" />
+                            android:text="@{manga.averageRating}" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_8"
-                            android:text="@string/episode_duration"
+                            android:text="@string/volume_count"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.episodeLength.toString()}" />
+                            android:text="@{manga.volumeCount.toString()}" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -211,7 +211,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.ageRating}" />
+                            android:text="@{manga.ageRating}" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -223,7 +223,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{anime.status}" />
+                            android:text="@{manga.status}" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -242,55 +242,55 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/dp_8"
-                    android:text="@{anime.synopsis}"
+                    android:text="@{manga.synopsis}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvSynopsisTitle" />
 
                 <TextView
-                    android:id="@+id/tvEpisodesTitle"
+                    android:id="@+id/tvChaptersTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/dp_16"
-                    android:text="@string/episodes_list"
+                    android:text="@string/chapters_list"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvSynopsis" />
 
                 <ProgressBar
-                    android:id="@+id/pbEpisode"
+                    android:id="@+id/pbChapter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:hideIfSaved="@{viewModel.hideProgressBarEpisodes}"
+                    app:hideIfSaved="@{viewModel.hideProgressBarChapter}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvEpisodesTitle" />
+                    app:layout_constraintTop_toBottomOf="@id/tvChaptersTitle" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvEpisodes"
+                    android:id="@+id/rvChapters"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/dp_8"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvEpisodesTitle"
-                    app:setRecycler="@{episodesAdapter}" />
+                    app:layout_constraintTop_toBottomOf="@id/tvChaptersTitle"
+                    app:setRecycler="@{chapterAdapter}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.getNextEpisodes(`next`)}"
+                    android:onClick="@{() -> viewModel.getNextChapters(`next`)}"
                     android:text="@string/next"
                     android:textStyle="italic"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rvEpisodes" />
+                    app:layout_constraintTop_toBottomOf="@id/rvChapters" />
 
                 <TextView
-                    android:id="@+id/tvBackEpisodes"
+                    android:id="@+id/tvBackChapters"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.getNextEpisodes(`back`)}"
+                    android:onClick="@{() -> viewModel.getNextChapters(`back`)}"
                     android:text="@string/back"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rvEpisodes" />
+                    app:layout_constraintTop_toBottomOf="@id/rvChapters" />
 
                 <TextView
                     android:id="@+id/tvCharactersTitle"
@@ -301,13 +301,13 @@
                     android:text="@string/characters_list"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvBackEpisodes" />
+                    app:layout_constraintTop_toBottomOf="@id/tvBackChapters" />
 
                 <ProgressBar
                     android:id="@+id/pbCharacter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:hideIfSaved="@{viewModel.hideProgressBarEpisodes}"
+                    app:hideIfSaved="@{viewModel.hideProgressBarCharacters}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCharactersTitle" />
