@@ -2,6 +2,23 @@
     <string name="app_name">Applaudo Code Challenge Android</string>
     <string name="unexpected_error">Unexpected Error.</string>
     <string name="search_hint">search your series</string>
-    <string name="search">search</string>
+    <string name="search">Search</string>
     <string name="favorites">favorites</string>
+    <string name="anime">Anime Section</string>
+    <string name="manga">Manga Section</string>
+    <string name="default_search">Naruto</string>
+    <string name="main_title">Main Title</string>
+    <string name="canonical_title">Canonical Title</string>
+    <string name="type">Type</string>
+    <string name="year">Year</string>
+    <string name="genres">Genres</string>
+    <string name="average_rating">Average Rating</string>
+    <string name="age_rating">Age Rating</string>
+    <string name="episode_duration">Episode Duration</string>
+    <string name="airing_status">Airing Status</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="episodes_list">Episodes List</string>
+    <string name="characters_list">Characters List</string>
+    <string name="next"><b><i><u>Next</u></i></b></string>
+    <string name="back"><b><i><u>Back</u></i></b></string>
 </resources>

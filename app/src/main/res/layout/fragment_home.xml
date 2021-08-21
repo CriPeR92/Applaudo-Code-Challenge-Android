@@ -11,8 +11,12 @@
             type="com.example.applaudocodechallengeandroid.ui.home.HomeViewModel" />
 
         <variable
-            name="adapter"
-            type="com.example.applaudocodechallengeandroid.ui.home.HomeAdapter" />
+            name="animeAdapter"
+            type="com.example.applaudocodechallengeandroid.ui.home.AnimeAdapter" />
+
+        <variable
+            name="mangaAdapter"
+            type="com.example.applaudocodechallengeandroid.ui.home.MangaAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,39 +52,85 @@
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/sv_search"
+                    android:layout_marginBottom="@dimen/dp_32"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.8"
                     android:imeOptions="actionDone"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:maxLines="1"
                     bind:setOnQueryTextListener="@{viewModel.QueryTextListener}"
-                    app:queryHint="@string/search_hint"
+                    app:queryHint="@string/search"
+                    app:iconifiedByDefault="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-
                 <ProgressBar
-                    android:id="@+id/progress_bar"
+                    android:id="@+id/pb_anime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:hideIfSaved="@{viewModel.hideProgress}"
+                    app:hideIfSaved="@{viewModel.hideProgressBarAnime}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/sv_search" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_8"
+                    android:textSize="@dimen/sp_16"
+                    android:text="@string/anime"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sv_search"
+                    app:layout_constraintBottom_toTopOf="@id/rv_anime" />
+
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/series_recycler"
-                    setAdapter="@{adapter}"
+                    android:id="@+id/rv_anime"
+                    setAdapter="@{animeAdapter}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:overScrollMode="never"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pb_anime" />
+
+                <ProgressBar
+                    android:id="@+id/pb_manga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:hideIfSaved="@{viewModel.hideProgressBarAnime}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_anime" />
+
+                <TextView
+                    android:id="@+id/tv_manga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dp_8"
+                    android:padding="@dimen/dp_8"
+                    android:text="@string/manga"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/rv_manga"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_anime" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_manga"
+                    setAdapter="@{mangaAdapter}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/progress_bar" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline_bottom"

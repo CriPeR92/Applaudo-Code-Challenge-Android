@@ -13,6 +13,7 @@ import com.example.applaudocodechallengeandroid.R
 fun loadImage(view: ImageView, imageUrl: String?) {
     Glide.with(view)
         .load(imageUrl)
+        .fitCenter()
         .error(R.drawable.ic_launcher_foreground)
         .into(view)
 }
@@ -34,4 +35,17 @@ fun RecyclerView.bindRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
     this.setHasFixedSize(true)
     this.isNestedScrollingEnabled = false
     this.adapter = adapter
+}
+
+/**
+ * Function to set adapter in recyclerView and set recyclerView features (VERTICAL)
+ */
+@BindingAdapter("app:setRecycler")
+fun setRecycler(view: RecyclerView, adapter: RecyclerView.Adapter<*>) {
+    view.run {
+        this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        this.setHasFixedSize(true)
+        this.isNestedScrollingEnabled = false
+        this.adapter = adapter
+    }
 }

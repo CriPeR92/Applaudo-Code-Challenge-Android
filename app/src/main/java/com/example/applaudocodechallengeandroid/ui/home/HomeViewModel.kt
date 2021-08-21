@@ -6,22 +6,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
-import com.example.applaudocodechallengeandroid.data.repository.CallbackSeries
-import com.example.applaudocodechallengeandroid.data.repository.SeriesRepository
-import com.example.applaudocodechallengeandroid.model.MainSeriesResponse
-import com.example.applaudocodechallengeandroid.model.Series
+import com.example.applaudocodechallengeandroid.data.repository.*
+import com.example.applaudocodechallengeandroid.model.*
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class HomeViewModel(application: Application, private val seriesRepository: SeriesRepository) : BaseViewModel(application),
-    CallbackSeries {
+class HomeViewModel(
+    application: Application,
+    private val animeRepository: AnimeRepository,
+    private val mangaRepository: MangaRepository
+) : BaseViewModel(application),
+    CallbackAnime, CallbackManga {
 
-    var seriesResponse = LiveEvent<MainSeriesResponse>()
-    var seriesSelected = MutableLiveData<Series>()
-//    var seasons = LiveEvent<ArrayList<Episode>>()
-    val hideProgress = MutableLiveData(false)
-    var search: String = ""
+    var animeResponse = LiveEvent<MainAnimeResponse>()
+    var mangaResponse = LiveEvent<MainMangaResponse>()
+    var genreResponse = LiveEvent<GenreResponse>()
+    var selectedAnime = LiveEvent<Anime>()
+    var selectedManga = LiveEvent<MangaAttributes>()
+    val hideProgressBarAnime = MutableLiveData(false)
+    val hideProgressBarManga = MutableLiveData(false)
     var showFavorites = LiveEvent<Boolean>()
     var error = LiveEvent<Error>()
 
@@ -33,16 +37,22 @@ class HomeViewModel(application: Application, private val seriesRepository: Seri
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-                println("asd")
                 return true
             }
         }
     }
 
-    fun getSeries() {
-        hideProgress.postValue(true)
+    fun getSeries(query: String) {
+        hideProgressBarAnime.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            seriesRepository.getSeries(this@HomeViewModel)
+            animeRepository.getSeries(this@HomeViewModel, query)
+        }
+    }
+
+    fun getManga(query: String) {
+        hideProgressBarManga.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            mangaRepository.getManga(this@HomeViewModel, query)
         }
     }
 
@@ -52,24 +62,29 @@ class HomeViewModel(application: Application, private val seriesRepository: Seri
 
     fun search(query: String) {
 //        if (Validator.validateInput(search)) {
-            hideProgress.value = true
-            viewModelScope.launch(Dispatchers.IO) {
-                seriesRepository.getSeries(this@HomeViewModel)
-            }
+        getSeries(query)
+        getManga(query)
 //        }
     }
 
-    fun onClickActionGridAdapter() {
-//        hideProgress.postValue(true)
-//        showSelected.postValue(show)
+    fun onClickActionAnime(anime: Anime) {
+        selectedAnime.postValue(anime)
+    }
+
+    fun onClickActionManga(manga: MangaAttributes) {
+        hideProgressBarManga.postValue(true)
+        selectedManga.postValue(manga)
 //        viewModelScope.launch(Dispatchers.IO) {
 //            seasonsRepository.getSeasons(this@HomeViewModel, show.id.toString())
 //        }
     }
 
+    override fun onSuccessAnime(response: MainAnimeResponse) {
+        animeResponse.postValue(response)
+    }
 
-    override fun onSuccessSeries(response: MainSeriesResponse) {
-        seriesResponse.postValue(response)
+    override fun onSuccessManga(response: MainMangaResponse) {
+        mangaResponse.postValue(response)
     }
 
     override fun onFailed(errorResponse: String) {

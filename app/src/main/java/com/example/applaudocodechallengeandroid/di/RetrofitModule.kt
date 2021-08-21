@@ -2,15 +2,16 @@ package com.example.applaudocodechallengeandroid.di
 
 import com.example.applaudocodechallengeandroid.BuildConfig
 import com.google.gson.GsonBuilder
-import okhttp3.Cache
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 private const val CONNECT_TIMEOUT = 10L
 private const val WRITE_TIMEOUT = 10L
