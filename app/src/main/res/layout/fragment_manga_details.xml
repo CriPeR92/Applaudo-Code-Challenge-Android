@@ -40,8 +40,9 @@
             android:onClick="@{() -> viewModel.addToFavorites()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@null"
             android:backgroundTint="@color/white"
-            android:src="@drawable/save_icon"
+            android:src="@drawable/ic_save"
             android:textAllCaps="false" />
 
         <androidx.core.widget.NestedScrollView

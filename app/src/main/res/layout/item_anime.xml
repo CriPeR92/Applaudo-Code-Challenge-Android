@@ -14,6 +14,11 @@
         <variable
             name="viewModel"
             type="com.example.applaudocodechallengeandroid.ui.home.HomeViewModel" />
+
+        <variable
+            name="viewModelFavorite"
+            type="com.example.applaudocodechallengeandroid.ui.favorites.FavoritesViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +46,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:background="@color/black"
-            android:text="@{anime.attributes.titles.en}"
+            android:text="@{anime.attributes.canonicalTitle}"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/ivImage"
             app:layout_constraintStart_toStartOf="@id/ivImage"

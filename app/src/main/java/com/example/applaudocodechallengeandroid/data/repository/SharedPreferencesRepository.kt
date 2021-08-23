@@ -9,7 +9,7 @@ import com.example.applaudocodechallengeandroid.model.Manga
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SharedPreferencesRepository {
+class SharedPreferencesRepository() {
 
     private var prefs: SharedPreferences? = null
     private var animeList: ArrayList<Anime>? = null

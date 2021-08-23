@@ -11,7 +11,7 @@ import com.example.applaudocodechallengeandroid.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DetailsMangaViewModel(application: Application, private val animeRepository: AnimeRepository, private val mangaRepository: MangaRepository)
+class DetailsMangaViewModel(application: Application, private val animeRepository: AnimeRepository, private val mangaRepository: MangaRepository, val sharedPreferencesRepository: SharedPreferencesRepository)
     : BaseViewModel(application), CallbackGenre, CallbackMangaChapter, CallbackMangaCharacter {
 
     var selectedManga = LiveEvent<Manga>()

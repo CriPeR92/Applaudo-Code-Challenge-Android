@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     application: Application,
     private val animeRepository: AnimeRepository,
-    private val mangaRepository: MangaRepository
+    private val mangaRepository: MangaRepository,
+    val sharedPreferencesRepository: SharedPreferencesRepository
 ) : BaseViewModel(application),
     CallbackAnime, CallbackManga {
 
     var animeResponse = LiveEvent<MainAnimeResponse>()
     var mangaResponse = LiveEvent<MainMangaResponse>()
-    var genreResponse = LiveEvent<GenreResponse>()
     var selectedAnime = LiveEvent<Anime>()
     var selectedManga = LiveEvent<Manga>()
     val hideProgressBarAnime = MutableLiveData(false)

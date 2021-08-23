@@ -7,15 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.example.applaudocodechallengeandroid.R
-import com.example.applaudocodechallengeandroid.data.repository.SharedPreferencesRepository
 import com.example.applaudocodechallengeandroid.databinding.FragmentMangaDetailsBinding
-import com.example.applaudocodechallengeandroid.model.Anime
 import com.example.applaudocodechallengeandroid.model.Manga
 import com.example.applaudocodechallengeandroid.ui.animeDetails.CharactersAdapter
-import com.example.applaudocodechallengeandroid.ui.animeDetails.DetailsViewModel
-import com.example.applaudocodechallengeandroid.ui.animeDetails.EpisodesAdapter
 import com.example.applaudocodechallengeandroid.ui.animeDetails.GenreAdapter
 import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -26,12 +21,13 @@ class MangaDetailsFragment : Fragment() {
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var chapterAdapter: ChaptersAdapter
     private lateinit var charactersAdapter: CharactersAdapter
-    private var sharedPreferencesRepository: SharedPreferencesRepository = SharedPreferencesRepository()
     private val viewModel: DetailsMangaViewModel by viewModel()
+    private var isFavorite: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.selectedManga.value = Gson().fromJson(arguments?.getString("manga"), Manga::class.java)
+        isFavorite = arguments?.getBoolean(resources.getString(R.string.is_favorite), false)
     }
 
     override fun onCreateView(
@@ -83,7 +79,7 @@ class MangaDetailsFragment : Fragment() {
 
         viewModel.addFavorites.observe(binding.lifecycleOwner!!, {
             if (it) {
-                sharedPreferencesRepository.saveFavorite(
+                viewModel.sharedPreferencesRepository.saveFavorite(
                     context = this.context,
                     manga = viewModel.selectedManga.value, anime = null
                 )

@@ -30,12 +30,13 @@
             android:layout_margin="@dimen/dp_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:tint="@null"
             android:layout_marginStart="@dimen/dp_8"
             android:onClick="@{() -> viewModel.favorites()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:backgroundTint="@color/white"
-            android:src="@drawable/star_icon" />
+            android:src="@drawable/ic_star" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

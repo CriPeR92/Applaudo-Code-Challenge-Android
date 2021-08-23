@@ -21,7 +21,6 @@ class AnimeDetailsFragment : Fragment() {
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var episodesAdapter: EpisodesAdapter
     private lateinit var charactersAdapter: CharactersAdapter
-    var sharedPreferencesRepository: SharedPreferencesRepository = SharedPreferencesRepository()
     private val viewModel: DetailsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +77,7 @@ class AnimeDetailsFragment : Fragment() {
 
         viewModel.addFavorites.observe(binding.lifecycleOwner!!, Observer {
             if (it) {
-                sharedPreferencesRepository.saveFavorite(context = this.context,
+                viewModel.sharedPreferencesRepository.saveFavorite(context = this.context,
                     anime = viewModel.selectedAnime.value, manga = null)
             }
         })

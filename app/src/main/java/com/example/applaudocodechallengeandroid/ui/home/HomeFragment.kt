@@ -67,7 +67,8 @@ class HomeFragment : Fragment() {
         viewModel.selectedAnime.observe(binding.lifecycleOwner!!, {
             val bundle =
                 bundleOf(
-                    "anime" to Gson().toJson(viewModel.selectedAnime.value)
+                    resources.getString(R.string.anime_) to Gson().toJson(it),
+                    resources.getString(R.string.is_favorite) to false
                 )
             findNavController().navigate(
                 R.id.action_homeFragment_to_detailsFragment,
@@ -76,10 +77,10 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.selectedManga.observe(binding.lifecycleOwner!!, {
-            viewModel.hideProgressBarManga.postValue(false)
             val bundle =
                 bundleOf(
-                    "manga" to Gson().toJson(it),
+                    resources.getString(R.string.manga_) to Gson().toJson(it),
+                    resources.getString(R.string.is_favorite) to false
                 )
             findNavController().navigate(
                 R.id.action_homeFragment_to_mangaDetailsFragment,
@@ -87,9 +88,25 @@ class HomeFragment : Fragment() {
             )
         })
 
-//        viewModel.showFavorites.observe(binding.lifecycleOwner!!, {
-//            findNavController().navigate(R.id.action_homeFragment_to_favoritesFragment)
-//        })
+        viewModel.showFavorites.observe(binding.lifecycleOwner!!, {
+            val bundle =
+                bundleOf(
+                    resources.getString(R.string.anime_) to Gson().toJson(
+                        viewModel.sharedPreferencesRepository.getAnimeFavorites(
+                            context
+                        )
+                    ),
+                    resources.getString(R.string.manga_) to Gson().toJson(
+                        viewModel.sharedPreferencesRepository.getMangaFavorites(
+                            context
+                        )
+                    )
+                )
+            findNavController().navigate(
+                R.id.action_homeFragment_to_favoritesFragment,
+                bundle
+            )
+        })
 
         if (!::animeAdapter.isInitialized) {
             viewModel.getSeries(resources.getString(R.string.default_search))
