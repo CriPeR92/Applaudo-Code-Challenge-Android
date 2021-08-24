@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.applaudocodechallengeandroid.model.Manga
 import com.example.applaudocodechallengeandroid.ui.home.MangaAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.koin.android.ext.android.bind
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
@@ -30,8 +32,10 @@ class FavoritesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        animeList = Gson().fromJson(arguments?.getString(resources.getString(R.string.anime_)), typeAnime)
-        mangaList = Gson().fromJson(arguments?.getString(resources.getString(R.string.manga_)), typeManga)
+        animeList =
+            Gson().fromJson(arguments?.getString(resources.getString(R.string.anime_)), typeAnime)
+        mangaList =
+            Gson().fromJson(arguments?.getString(resources.getString(R.string.manga_)), typeManga)
     }
 
     override fun onCreateView(
@@ -63,7 +67,7 @@ class FavoritesFragment : Fragment() {
                     resources.getString(R.string.is_favorite) to true
                 )
             findNavController().navigate(
-                R.id.action_homeFragment_to_detailsFragment,
+                R.id.action_favoritesFragment_to_detailsFragment,
                 bundle
             )
         })
@@ -75,21 +79,21 @@ class FavoritesFragment : Fragment() {
                     resources.getString(R.string.is_favorite) to true
                 )
             findNavController().navigate(
-                R.id.action_homeFragment_to_mangaDetailsFragment,
+                R.id.action_favoritesFragment_to_mangaDetailsFragment,
                 bundle
             )
         })
 
-//        viewModel.remove.observe(binding.lifecycleOwner!!, {
-//            favorites?.remove(viewModel.remove.value!!)
-//            val editor: SharedPreferences.Editor? = prefs?.edit()
-//            editor!!.putString("list", Gson().toJson(favorites))
-//            editor.apply()
-//            adapter = FavoritesAdapter(this, favorites!!)
-//            adapter.notifyDataSetChanged()
-//            binding.adapter = adapter
-//
-//            Toast.makeText(this.context, R.string.removed, Toast.LENGTH_LONG).show()
-//        })
+        viewModel.removeAnime.observe(binding.lifecycleOwner!!, {
+            animeList?.removeAll { deleteAnime ->
+                it.id == deleteAnime.id
+            }
+            viewModel.sharedPreferencesRepository.deleteAnime(context = context, animeList)
+            animeAdapter = AnimeFavoriteAdapter(this, animeList!!)
+            animeAdapter.notifyDataSetChanged()
+            binding.animeAdapter = animeAdapter
+            Toast.makeText(this.context, R.string.removed, Toast.LENGTH_LONG).show()
+
+        })
     }
 }

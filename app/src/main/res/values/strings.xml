@@ -13,6 +13,7 @@
     <string name="no_title">No title</string>
     <string name="year">Year</string>
     <string name="genres">Genres</string>
+    <string name="trailer"><b><i><u>Trailer</u></i></b></string>
     <string name="average_rating">Average Rating</string>
     <string name="age_rating">Age Rating</string>
     <string name="episode_duration">Episode Duration</string>
@@ -31,5 +32,7 @@
     <string name="is_favorite">isFavorite</string>
     <string name="anime_">anime</string>
     <string name="manga_">manga</string>
+    <string name="anime_list">animeList</string>
+    <string name="manga_list">mangaList</string>
 
 </resources>

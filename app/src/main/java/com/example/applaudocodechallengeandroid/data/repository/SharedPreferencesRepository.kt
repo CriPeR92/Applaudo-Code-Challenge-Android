@@ -9,7 +9,7 @@ import com.example.applaudocodechallengeandroid.model.Manga
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SharedPreferencesRepository() {
+class SharedPreferencesRepository {
 
     private var prefs: SharedPreferences? = null
     private var animeList: ArrayList<Anime>? = null
@@ -25,25 +25,24 @@ class SharedPreferencesRepository() {
         val editor: SharedPreferences.Editor? = prefs?.edit()
 
         if (manga == null) {
-            animeList = Gson().fromJson(prefs?.getString("animeList", null), typeAnime) ?: ArrayList()
+            animeList = Gson().fromJson(prefs?.getString(context?.resources?.getString(R.string.anime_list), null), typeAnime) ?: ArrayList()
             if (animeList?.firstOrNull { ob ->
                     ob.id == anime?.id
                 } == null) {
-
                 anime?.let { animeList?.add(it) }
-                editor?.putString("animeList", Gson().toJson(animeList))
+                editor?.putString(context?.resources?.getString(R.string.anime_list), Gson().toJson(animeList))
                 Toast.makeText(context, R.string.added, Toast.LENGTH_LONG).show()
                 editor?.apply()
             } else {
                 Toast.makeText(context, R.string.inList, Toast.LENGTH_LONG).show()
             }
         } else {
-            mangaList = Gson().fromJson(prefs?.getString("mangaList", null), typeManga) ?: ArrayList()
+            mangaList = Gson().fromJson(prefs?.getString(context?.resources?.getString(R.string.manga_list), null), typeManga) ?: ArrayList()
             if (mangaList?.firstOrNull { ob ->
                     ob.id == manga.id
                 } == null) {
                 manga.let { mangaList?.add(it) }
-                editor?.putString("mangaList", Gson().toJson(mangaList))
+                editor?.putString(context?.resources?.getString(R.string.manga_list), Gson().toJson(mangaList))
                 Toast.makeText(context, R.string.added, Toast.LENGTH_LONG).show()
                 editor?.apply()
             } else {
@@ -53,19 +52,25 @@ class SharedPreferencesRepository() {
 
     }
 
-    fun getAnimeFavorites(context: Context?) : ArrayList<Anime> {
+    fun getAnimeFavorites(context: Context?) : ArrayList<Anime>? {
         prefs = context?.getSharedPreferences(context.resources
             .getString(R.string.favorites), Context.MODE_PRIVATE)
-        return Gson().fromJson(prefs!!.getString("animeList", null), typeAnime)
+        return Gson().fromJson(prefs?.getString(context?.resources?.getString(R.string.anime_list), null), typeAnime)
     }
 
-    fun getMangaFavorites(context: Context?) : ArrayList<Manga> {
+    fun getMangaFavorites(context: Context?) : ArrayList<Manga>? {
         prefs = context?.getSharedPreferences(context.resources
             .getString(R.string.favorites), Context.MODE_PRIVATE)
-        return Gson().fromJson(prefs!!.getString("mangaList", null), typeManga)
+        return Gson().fromJson(prefs?.getString(context?.resources?.getString(R.string.manga_list), null), typeManga)
     }
 
-    fun deleteFavorite() {
+    fun deleteAnime(context: Context?, animeList: ArrayList<Anime>?): ArrayList<Anime>? {
+        prefs = context?.getSharedPreferences(context.resources
+            .getString(R.string.favorites), Context.MODE_PRIVATE)
 
+        val editor: SharedPreferences.Editor? = prefs?.edit()
+        editor?.putString(context?.resources?.getString(R.string.anime_list), Gson().toJson(animeList))
+        editor?.apply()
+        return animeList
     }
 }

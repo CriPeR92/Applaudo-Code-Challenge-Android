@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="anime"
+            type="com.example.applaudocodechallengeandroid.model.Anime" />
+
+        <variable
+            name="viewModelFavorite"
+            type="com.example.applaudocodechallengeandroid.ui.favorites.FavoritesViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:onClick="@{() -> viewModelFavorite.onClickAnimeAdapter(anime)}">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnFavorites"
+            android:layout_margin="@dimen/dp_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="@null"
+            android:backgroundTint="@android:color/background_light"
+            android:onClick="@{() -> viewModelFavorite.removeAnime(anime)}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_delete" />
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            bind:imageUrl="@{anime.attributes.posterImage.large}"/>
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:background="@color/black"
+            android:text="@{anime.attributes.canonicalTitle}"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/ivImage"
+            app:layout_constraintStart_toStartOf="@id/ivImage"
+            app:layout_constraintBottom_toBottomOf="@id/ivImage" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

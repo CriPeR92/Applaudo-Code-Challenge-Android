@@ -8,26 +8,25 @@ import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
 import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.*
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class HomeViewModel(
     application: Application,
     private val animeRepository: AnimeRepository,
     private val mangaRepository: MangaRepository,
     val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application),
-    CallbackAnime, CallbackManga {
+) : BaseViewModel(application) {
 
-    var animeResponse = LiveEvent<MainAnimeResponse>()
-    var mangaResponse = LiveEvent<MainMangaResponse>()
+    var animeResponse = LiveEvent<MainAnimeResponse?>()
+    var mangaResponse = LiveEvent<MainMangaResponse?>()
     var selectedAnime = LiveEvent<Anime>()
     var selectedManga = LiveEvent<Manga>()
     val hideProgressBarAnime = MutableLiveData(false)
     val hideProgressBarManga = MutableLiveData(false)
     var showFavorites = LiveEvent<Boolean>()
-    var error = LiveEvent<Error>()
+    var error = LiveEvent<String>()
 
     fun getQueryTextListener(): SearchView.OnQueryTextListener {
         return object : SearchView.OnQueryTextListener {
@@ -45,14 +44,29 @@ class HomeViewModel(
     fun getSeries(query: String) {
         hideProgressBarAnime.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            animeRepository.getSeries(this@HomeViewModel, query)
+            kotlin.runCatching {
+                animeRepository.getSeries(query)
+            }.onSuccess { status: Response<MainAnimeResponse> ->
+                onSuccessAnime(status.body())
+            }.onFailure {
+                hideProgressBarAnime.postValue(false)
+                onFailed(errorMessage)
+            }
         }
     }
+
 
     fun getManga(query: String) {
         hideProgressBarManga.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            mangaRepository.getManga(this@HomeViewModel, query)
+            kotlin.runCatching {
+                mangaRepository.getManga(query)
+            }.onSuccess { status: Response<MainMangaResponse> ->
+                onSuccessManga(status.body())
+            }.onFailure {
+                hideProgressBarManga.postValue(false)
+                onFailed(errorMessage)
+            }
         }
     }
 
@@ -75,15 +89,15 @@ class HomeViewModel(
         selectedManga.postValue(manga)
     }
 
-    override fun onSuccessAnime(response: MainAnimeResponse) {
+    private fun onSuccessAnime(response: MainAnimeResponse?) {
         animeResponse.postValue(response)
     }
 
-    override fun onSuccessManga(response: MainMangaResponse) {
+    private fun onSuccessManga(response: MainMangaResponse?) {
         mangaResponse.postValue(response)
     }
 
-    override fun onFailed(errorResponse: String) {
-        error.postValue(Gson().fromJson(errorResponse, Error::class.java))
+    private fun onFailed(errorResponse: String) {
+        error.postValue(errorResponse)
     }
 }

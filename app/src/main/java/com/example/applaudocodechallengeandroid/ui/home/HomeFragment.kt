@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
             viewModel.hideProgressBarAnime.postValue(false)
             animeAdapter = AnimeAdapter(
                 this,
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.animeAdapter = animeAdapter
             animeAdapter.notifyDataSetChanged()
@@ -54,14 +54,14 @@ class HomeFragment : Fragment() {
             viewModel.hideProgressBarManga.postValue(false)
             mangaAdapter = MangaAdapter(
                 this,
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.mangaAdapter = mangaAdapter
             mangaAdapter.notifyDataSetChanged()
         })
 
         viewModel.error.observe(binding.lifecycleOwner!!, {
-            Toast.makeText(this.context, it.message, Toast.LENGTH_LONG).show()
+            Toast.makeText(this.context, it, Toast.LENGTH_LONG).show()
         })
 
         viewModel.selectedAnime.observe(binding.lifecycleOwner!!, {

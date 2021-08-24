@@ -1,5 +1,8 @@
 package com.example.applaudocodechallengeandroid.ui.animeDetails
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +12,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.applaudocodechallengeandroid.R
-import com.example.applaudocodechallengeandroid.data.repository.SharedPreferencesRepository
 import com.example.applaudocodechallengeandroid.databinding.FragmentAnimeDetailsBinding
 import com.example.applaudocodechallengeandroid.model.*
 import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
+
 
 class AnimeDetailsFragment : Fragment() {
 
@@ -25,7 +28,8 @@ class AnimeDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.selectedAnime.value = Gson().fromJson(arguments?.getString("anime"), Anime::class.java)
+        viewModel.selectedAnime.value = Gson().fromJson(arguments?.getString(resources.getString(R.string.anime_)), Anime::class.java)
+        viewModel.isFavorite.value = arguments?.getBoolean(resources.getString(R.string.is_favorite))
     }
 
     override fun onCreateView(
@@ -48,10 +52,20 @@ class AnimeDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.videoUrl.observe(binding.lifecycleOwner!!, {
+            val intentApp = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$it"))
+            val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$it"))
+            try {
+                this.startActivity(intentApp)
+            } catch (ex: ActivityNotFoundException) {
+                this.startActivity(intentBrowser)
+            }
+        })
+
         viewModel.genreResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressGenre.postValue(false)
             genreAdapter = GenreAdapter(
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.genreAdapter = genreAdapter
             genreAdapter.notifyDataSetChanged()
@@ -60,7 +74,7 @@ class AnimeDetailsFragment : Fragment() {
         viewModel.episodesResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarEpisodes.postValue(false)
             episodesAdapter = EpisodesAdapter(
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.episodesAdapter = episodesAdapter
             episodesAdapter.notifyDataSetChanged()
@@ -69,7 +83,7 @@ class AnimeDetailsFragment : Fragment() {
         viewModel.charactersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarCharacters.postValue(false)
             charactersAdapter = CharactersAdapter(
-                it.included ?: ArrayList()
+                it?.included ?: ArrayList()
             )
             binding.charactersAdapter = charactersAdapter
             charactersAdapter.notifyDataSetChanged()

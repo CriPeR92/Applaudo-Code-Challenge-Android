@@ -18,6 +18,15 @@ fun loadImage(view: ImageView, imageUrl: String?) {
         .into(view)
 }
 
+@BindingAdapter("app:setIcon")
+fun setIcon(view: ImageView, isFavorite: Boolean?) {
+    if (isFavorite == true) {
+        view.visibility = View.GONE
+    } else {
+        view.setImageResource(R.drawable.ic_save)
+    }
+}
+
 /**
  * bind to know when to hide or show a view
  */

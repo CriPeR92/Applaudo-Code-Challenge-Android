@@ -22,12 +22,11 @@ class MangaDetailsFragment : Fragment() {
     private lateinit var chapterAdapter: ChaptersAdapter
     private lateinit var charactersAdapter: CharactersAdapter
     private val viewModel: DetailsMangaViewModel by viewModel()
-    private var isFavorite: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.selectedManga.value = Gson().fromJson(arguments?.getString("manga"), Manga::class.java)
-        isFavorite = arguments?.getBoolean(resources.getString(R.string.is_favorite), false)
+        viewModel.isFavorite.value = arguments?.getBoolean(resources.getString(R.string.is_favorite), false)
     }
 
     override fun onCreateView(
@@ -53,7 +52,7 @@ class MangaDetailsFragment : Fragment() {
         viewModel.genreResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressGenre.postValue(false)
             genreAdapter = GenreAdapter(
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.genreAdapter = genreAdapter
             genreAdapter.notifyDataSetChanged()
@@ -62,7 +61,7 @@ class MangaDetailsFragment : Fragment() {
         viewModel.chaptersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarChapter.postValue(false)
             chapterAdapter = ChaptersAdapter(
-                it.data ?: ArrayList()
+                it?.data ?: ArrayList()
             )
             binding.chapterAdapter = chapterAdapter
             chapterAdapter.notifyDataSetChanged()
@@ -71,7 +70,7 @@ class MangaDetailsFragment : Fragment() {
         viewModel.charactersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarCharacters.postValue(false)
             charactersAdapter = CharactersAdapter(
-                it.included ?: ArrayList()
+                it?.included ?: ArrayList()
             )
             binding.charactersAdapter = charactersAdapter
             charactersAdapter.notifyDataSetChanged()

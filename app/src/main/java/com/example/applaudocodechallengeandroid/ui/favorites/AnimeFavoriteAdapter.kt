@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.applaudocodechallengeandroid.databinding.ItemAnimeBinding
+import com.example.applaudocodechallengeandroid.databinding.ItemAnimeFavoriteBinding
 import com.example.applaudocodechallengeandroid.model.Anime
 
 class AnimeFavoriteAdapter(private var fragment: FavoritesFragment, var list: ArrayList<Anime>) :
@@ -14,7 +14,7 @@ class AnimeFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimeFavoriteViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemAnimeBinding.inflate(layoutInflater)
+        val binding = ItemAnimeFavoriteBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(fragment).get(FavoritesViewModel::class.java)
         return AnimeFavoriteViewHolder(binding)
     }
@@ -24,10 +24,16 @@ class AnimeFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
         holder.binding.anime = list[position]
     }
 
-    class AnimeFavoriteViewHolder(val binding: ItemAnimeBinding) :
+    class AnimeFavoriteViewHolder(val binding: ItemAnimeFavoriteBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun update(newlist: ArrayList<Anime>) {
+        list.clear()
+        list.addAll(newlist)
+        notifyDataSetChanged()
     }
 }

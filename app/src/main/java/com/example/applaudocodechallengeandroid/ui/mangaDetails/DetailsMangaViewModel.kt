@@ -10,65 +10,99 @@ import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
-class DetailsMangaViewModel(application: Application, private val animeRepository: AnimeRepository, private val mangaRepository: MangaRepository, val sharedPreferencesRepository: SharedPreferencesRepository)
-    : BaseViewModel(application), CallbackGenre, CallbackMangaChapter, CallbackMangaCharacter {
+class DetailsMangaViewModel(
+    application: Application,
+    private val animeRepository: AnimeRepository,
+    private val mangaRepository: MangaRepository,
+    val sharedPreferencesRepository: SharedPreferencesRepository
+) : BaseViewModel(application) {
 
     var selectedManga = LiveEvent<Manga>()
-    var genreResponse = LiveEvent<GenreResponse>()
-    var chaptersResponse = LiveEvent<MangaChapterResponse>()
-    var charactersResponse = LiveEvent<MainCharactersResponse>()
+    var genreResponse = LiveEvent<GenreResponse?>()
+    var chaptersResponse = LiveEvent<MangaChapterResponse?>()
+    var charactersResponse = LiveEvent<MainCharactersResponse?>()
     val hideProgressGenre = MutableLiveData(false)
     val hideProgressBarChapter = MutableLiveData(false)
     val hideProgressBarCharacters = MutableLiveData(false)
     var addFavorites = LiveEvent<Boolean>()
+    var isFavorite = LiveEvent<Boolean>()
     var error = LiveEvent<String>()
 
     fun getGenres() {
         hideProgressGenre.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            animeRepository.getGenre(
-                this@DetailsMangaViewModel,
-                id = selectedManga.value?.id.toString(),
-                type = selectedManga.value?.type.toString()
-            )
+            kotlin.runCatching {
+                animeRepository.getGenre(
+                    id = selectedManga.value?.id.toString(),
+                    type = selectedManga.value?.type.toString()
+                )
+            }.onSuccess { response: Response<GenreResponse> ->
+                onSuccessGenre(response.body())
+            }.onFailure {
+                hideProgressGenre.postValue(false)
+                onFailed(errorMessage)
+            }
         }
     }
 
     fun getChapters() {
         hideProgressBarChapter.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            mangaRepository.getMangaChapters(
-                this@DetailsMangaViewModel,
-                id = selectedManga.value?.id.toString(),
-            )
+            kotlin.runCatching {
+                mangaRepository.getMangaChapters(
+                    id = selectedManga.value?.id.toString(),
+                )
+            }.onSuccess { response: Response<MangaChapterResponse> ->
+                onSuccessMangaChapter(response.body())
+            }.onFailure {
+                hideProgressBarChapter.postValue(false)
+                onFailed(errorMessage)
+            }
         }
     }
 
     fun getCharacters() {
         hideProgressBarCharacters.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            mangaRepository.getMangaCharacters(
-                this@DetailsMangaViewModel,
-                mangaId = selectedManga.value?.id.toString(),
-            )
+            kotlin.runCatching {
+                mangaRepository.getMangaCharacters(
+                    mangaId = selectedManga.value?.id.toString(),
+                )
+            }.onSuccess { response: Response<MainCharactersResponse> ->
+                onSuccessMangaCharacter(response.body())
+            }.onFailure {
+                hideProgressBarCharacters.postValue(false)
+                onFailed(errorMessage)
+            }
         }
     }
 
     fun getNextCharacters(action: String) {
         if (action == "next" && charactersResponse.value?.links?.next != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                mangaRepository.getMangaCharactersBackOrNext(
-                    this@DetailsMangaViewModel,
-                    url = charactersResponse.value?.links?.next.toString()
-                )
+                kotlin.runCatching {
+                    mangaRepository.getMangaCharactersBackOrNext(
+                        url = charactersResponse.value?.links?.next.toString()
+                    )
+                }.onSuccess { response: Response<MainCharactersResponse> ->
+                    onSuccessMangaCharacter(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
             }
-        } else if(action == "back" && charactersResponse.value?.links?.prev != null){
+        } else if (action == "back" && charactersResponse.value?.links?.prev != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                mangaRepository.getMangaCharactersBackOrNext(
-                    this@DetailsMangaViewModel,
-                    url = charactersResponse.value?.links?.prev.toString()
-                )
+                kotlin.runCatching {
+                    mangaRepository.getMangaCharactersBackOrNext(
+                        url = charactersResponse.value?.links?.prev.toString()
+                    )
+                }.onSuccess { response: Response<MainCharactersResponse> ->
+                    onSuccessMangaCharacter(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
             }
         }
     }
@@ -77,17 +111,27 @@ class DetailsMangaViewModel(application: Application, private val animeRepositor
     fun getNextChapters(action: String) {
         if (action == "next" && chaptersResponse.value?.links?.next != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                mangaRepository.getMangaChaptersBackOrNext(
-                    this@DetailsMangaViewModel,
-                    url = chaptersResponse.value?.links?.next.toString()
-                )
+                kotlin.runCatching {
+                    mangaRepository.getMangaChaptersBackOrNext(
+                        url = chaptersResponse.value?.links?.next.toString()
+                    )
+                }.onSuccess { response: Response<MangaChapterResponse> ->
+                    onSuccessMangaChapter(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
             }
-        } else if(action == "back" && chaptersResponse.value?.links?.prev != null){
+        } else if (action == "back" && chaptersResponse.value?.links?.prev != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                mangaRepository.getMangaChaptersBackOrNext(
-                    this@DetailsMangaViewModel,
-                    url = chaptersResponse.value?.links?.prev.toString()
-                )
+                kotlin.runCatching {
+                    mangaRepository.getMangaChaptersBackOrNext(
+                        url = chaptersResponse.value?.links?.prev.toString()
+                    )
+                }.onSuccess { response: Response<MangaChapterResponse> ->
+                    onSuccessMangaChapter(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
             }
         }
 
@@ -97,19 +141,19 @@ class DetailsMangaViewModel(application: Application, private val animeRepositor
         addFavorites.postValue(true)
     }
 
-    override fun onSuccessGenre(response: GenreResponse) {
+    private fun onSuccessGenre(response: GenreResponse?) {
         genreResponse.postValue(response)
     }
 
-    override fun onSuccessMangaCharacter(response: MainCharactersResponse) {
+    private fun onSuccessMangaCharacter(response: MainCharactersResponse?) {
         charactersResponse.postValue(response)
     }
 
-    override fun onSuccessMangaChapter(response: MangaChapterResponse) {
+    private fun onSuccessMangaChapter(response: MangaChapterResponse?) {
         chaptersResponse.postValue(response)
     }
 
-    override fun onFailed(errorResponse: String) {
+    private fun onFailed(errorResponse: String) {
         error.postValue(errorResponse)
     }
 }

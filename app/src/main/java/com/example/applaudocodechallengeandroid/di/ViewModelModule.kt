@@ -12,5 +12,5 @@ val viewModelModule = module {
     viewModel { HomeViewModel(androidApplication(), get(), get(), get()) }
     viewModel { DetailsViewModel(androidApplication(), get(), get()) }
     viewModel { DetailsMangaViewModel(androidApplication(), get(), get(), get()) }
-    viewModel { FavoritesViewModel(androidApplication()) }
+    viewModel { FavoritesViewModel(androidApplication(), get()) }
 }

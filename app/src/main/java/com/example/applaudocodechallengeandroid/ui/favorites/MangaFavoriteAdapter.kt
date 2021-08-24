@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.applaudocodechallengeandroid.databinding.ItemMangaBinding
+import com.example.applaudocodechallengeandroid.databinding.ItemMangaFavoriteBinding
 import com.example.applaudocodechallengeandroid.model.Manga
 
 class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: ArrayList<Manga>) :
@@ -14,7 +14,7 @@ class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaFavoriteAdapterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemMangaBinding.inflate(layoutInflater)
+        val binding = ItemMangaFavoriteBinding.inflate(layoutInflater)
         favoriteViewModel = ViewModelProvider(fragment).get(FavoritesViewModel::class.java)
         return MangaFavoriteAdapterViewHolder(binding)
     }
@@ -24,7 +24,7 @@ class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
         holder.binding.manga = list[position]
     }
 
-    class MangaFavoriteAdapterViewHolder(val binding: ItemMangaBinding) :
+    class MangaFavoriteAdapterViewHolder(val binding: ItemMangaFavoriteBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount(): Int {
