@@ -32,28 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnFavorites"
-            android:layout_margin="@dimen/dp_16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:setIcon="@{viewModel.isFavorite}"
-            android:onClick="@{() -> viewModel.addToFavorites()}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@null"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_save"
-            android:textAllCaps="false" />
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_32"
-            app:layout_constraintTop_toTopOf="parent"
+            android:padding="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
-            android:paddingTop="@dimen/sp_16">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -131,6 +116,27 @@
                             android:text="@{manga.startDate + `  ` + manga.endDate}" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:layout_marginVertical="@dimen/dp_16"
+                    android:onClick="@{() -> viewModel.addToFavorites()}"
+                    android:src="@drawable/ic_favorite"
+                    app:layout_constraintEnd_toStartOf="@id/ivShare"
+                    app:layout_constraintTop_toBottomOf="@id/ll_header"
+                    app:setIcon="@{viewModel.isFavorite}" />
+
+                <ImageView
+                    android:id="@+id/ivShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dp_16"
+                    android:onClick="@{() -> viewModel.shareName(manga.canonicalTitle)}"
+                    android:src="@drawable/ic_baseline_share_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_header" />
 
                 <TextView
                     android:id="@+id/tvGenreTitle"

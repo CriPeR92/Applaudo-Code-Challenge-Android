@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.applaudocodechallengeandroid.databinding.ItemEpisodesBinding
 import com.example.applaudocodechallengeandroid.model.Episode
-import com.example.applaudocodechallengeandroid.model.EpisodeAttributes
 
 class EpisodesAdapter(var list: ArrayList<Episode>) :
     RecyclerView.Adapter<EpisodesAdapter.EpisodesAdapterViewHolder>() {

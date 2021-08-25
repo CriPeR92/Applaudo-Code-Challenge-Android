@@ -2,7 +2,6 @@ package com.example.applaudocodechallengeandroid.ui.animeDetails
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.applaudocodechallengeandroid.databinding.ItemGenreBinding
 import com.example.applaudocodechallengeandroid.model.Genre

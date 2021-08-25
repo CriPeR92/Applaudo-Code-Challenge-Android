@@ -14,6 +14,12 @@ import com.example.applaudocodechallengeandroid.databinding.FragmentHomeBinding
 import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
 
+/**
+ * Home Fragment: Shows applications main view, list of anime and manga
+ * Anime and manga search (by default first call is "Naruto")
+ * Favorite button
+ */
+
 class HomeFragment : Fragment() {
 
     private lateinit var mangaAdapter: MangaAdapter
@@ -40,6 +46,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /**
+         * Main anime call observer
+         */
         viewModel.animeResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarAnime.postValue(false)
             animeAdapter = AnimeAdapter(
@@ -50,6 +59,9 @@ class HomeFragment : Fragment() {
             animeAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * Main manga call observer
+         */
         viewModel.mangaResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarManga.postValue(false)
             mangaAdapter = MangaAdapter(
@@ -60,10 +72,16 @@ class HomeFragment : Fragment() {
             mangaAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * Default error message
+         */
         viewModel.error.observe(binding.lifecycleOwner!!, {
             Toast.makeText(this.context, it, Toast.LENGTH_LONG).show()
         })
 
+        /**
+         * Go to animeDetails Fragment
+         */
         viewModel.selectedAnime.observe(binding.lifecycleOwner!!, {
             val bundle =
                 bundleOf(
@@ -76,6 +94,9 @@ class HomeFragment : Fragment() {
             )
         })
 
+        /**
+         * Go to mangaDetails Fragment
+         */
         viewModel.selectedManga.observe(binding.lifecycleOwner!!, {
             val bundle =
                 bundleOf(
@@ -88,6 +109,9 @@ class HomeFragment : Fragment() {
             )
         })
 
+        /**
+         * Go to favorites Fragment
+         */
         viewModel.showFavorites.observe(binding.lifecycleOwner!!, {
             val bundle =
                 bundleOf(
@@ -108,6 +132,9 @@ class HomeFragment : Fragment() {
             )
         })
 
+        /**
+         * Adapters
+         */
         if (!::animeAdapter.isInitialized) {
             viewModel.getSeries(resources.getString(R.string.default_search))
             animeAdapter = AnimeAdapter(this, ArrayList())

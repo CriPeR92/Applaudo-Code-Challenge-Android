@@ -75,10 +75,72 @@ class HomeViewModel(
     }
 
     fun search(query: String) {
-//        if (Validator.validateInput(search)) {
-        getSeries(query)
-        getManga(query)
-//        }
+        if (Validator.validateInput(query)) {
+            getSeries(query)
+            getManga(query)
+        }
+    }
+
+    fun getNextAnime(action: String) {
+
+        if (action == "next" && animeResponse.value?.links?.next != null) {
+            hideProgressBarAnime.postValue(true)
+            viewModelScope.launch(Dispatchers.IO) {
+                kotlin.runCatching {
+                    animeRepository.getAnimePrevOrNext(
+                        url = animeResponse.value?.links?.next.toString()
+                    )
+                }.onSuccess { response: Response<MainAnimeResponse> ->
+                    onSuccessAnime(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
+            }
+        } else if (action == "back" && animeResponse.value?.links?.prev != null) {
+            hideProgressBarAnime.postValue(true)
+            viewModelScope.launch(Dispatchers.IO) {
+                kotlin.runCatching {
+                    animeRepository.getAnimePrevOrNext(
+                        url = animeResponse.value?.links?.prev.toString()
+                    )
+                }.onSuccess { response: Response<MainAnimeResponse> ->
+                    onSuccessAnime(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
+            }
+        }
+    }
+
+    fun getNextManga(action: String) {
+
+        if (action == "next" && mangaResponse.value?.links?.next != null) {
+            hideProgressBarManga.postValue(true)
+            viewModelScope.launch(Dispatchers.IO) {
+                kotlin.runCatching {
+                    mangaRepository.getMangaPrevOrNext(
+                        url = mangaResponse.value?.links?.next.toString()
+                    )
+                }.onSuccess { response: Response<MainMangaResponse> ->
+                    onSuccessManga(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
+            }
+        } else if (action == "back" && mangaResponse.value?.links?.prev != null) {
+            hideProgressBarManga.postValue(true)
+            viewModelScope.launch(Dispatchers.IO) {
+                kotlin.runCatching {
+                    mangaRepository.getMangaPrevOrNext(
+                        url = mangaResponse.value?.links?.prev.toString()
+                    )
+                }.onSuccess { response: Response<MainMangaResponse> ->
+                    onSuccessManga(response.body())
+                }.onFailure {
+                    onFailed(errorMessage)
+                }
+            }
+        }
     }
 
     fun onClickActionAnime(anime: Anime) {

@@ -24,32 +24,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
-        android:onClick="@{() -> viewModel.onClickActionAnime(anime)}">
+        android:onClick="@{() -> viewModel.onClickActionAnime(anime)}"
+        android:padding="@dimen/dp_8">
 
         <ImageView
             android:id="@+id/ivImage"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:adjustViewBounds="true"
-            app:layout_constraintEnd_toEndOf="parent"
             android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            bind:imageUrl="@{anime.attributes.posterImage.large}"/>
+            bind:imageUrl="@{anime.attributes.posterImage.large}" />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:background="@color/black"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:background="@color/black"
             android:text="@{anime.attributes.canonicalTitle}"
+            android:textColor="@color/white"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivImage"
             app:layout_constraintEnd_toEndOf="@id/ivImage"
-            app:layout_constraintStart_toStartOf="@id/ivImage"
-            app:layout_constraintBottom_toBottomOf="@id/ivImage" />
+            app:layout_constraintStart_toStartOf="@id/ivImage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

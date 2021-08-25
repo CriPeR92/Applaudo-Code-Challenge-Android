@@ -12,7 +12,10 @@ class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
 
     private lateinit var favoriteViewModel: FavoritesViewModel
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaFavoriteAdapterViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MangaFavoriteAdapterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemMangaFavoriteBinding.inflate(layoutInflater)
         favoriteViewModel = ViewModelProvider(fragment).get(FavoritesViewModel::class.java)

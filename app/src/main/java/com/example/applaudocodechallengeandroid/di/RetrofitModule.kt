@@ -1,6 +1,5 @@
 package com.example.applaudocodechallengeandroid.di
 
-import android.util.Log
 import com.example.applaudocodechallengeandroid.BuildConfig
 import com.google.gson.GsonBuilder
 import okhttp3.*
@@ -10,15 +9,15 @@ import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
-import java.util.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * retrofitModule: Di for RetrofitClient
+ */
 
 private const val CONNECT_TIMEOUT = 10L
 private const val WRITE_TIMEOUT = 10L
 private const val READ_TIMEOUT = 10L
-
 
 val retrofitModule = module {
     single { Cache(androidApplication().cacheDir, 10L * 1024 * 1024) }

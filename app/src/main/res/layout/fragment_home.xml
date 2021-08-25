@@ -4,6 +4,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -25,19 +26,6 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnFavorites"
-            android:layout_margin="@dimen/dp_16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:tint="@null"
-            android:layout_marginStart="@dimen/dp_8"
-            android:onClick="@{() -> viewModel.favorites()}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_star" />
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,20 +39,33 @@
                 android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.SearchView
-                    android:id="@+id/sv_search"
-                    android:layout_marginBottom="@dimen/dp_32"
+                    android:id="@+id/svSearch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_32"
                     android:layout_weight="0.8"
                     android:imeOptions="actionDone"
-                    android:layout_marginTop="@dimen/dp_8"
                     android:maxLines="1"
-                    bind:setOnQueryTextListener="@{viewModel.QueryTextListener}"
-                    app:queryHint="@string/search"
                     app:iconifiedByDefault="false"
+                    app:layout_constraintEnd_toStartOf="@id/btnFavorites"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:queryHint="@string/search"
+                    bind:setOnQueryTextListener="@{viewModel.QueryTextListener}" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btnFavorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:backgroundTint="@color/white"
+                    android:foregroundGravity="center"
+                    android:onClick="@{() -> viewModel.favorites()}"
+                    android:src="@drawable/ic_star"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@null" />
 
                 <ProgressBar
                     android:id="@+id/pb_anime"
@@ -73,19 +74,18 @@
                     app:hideIfSaved="@{viewModel.hideProgressBarAnime}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sv_search" />
+                    app:layout_constraintTop_toBottomOf="@id/svSearch" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_8"
-                    android:textSize="@dimen/sp_16"
                     android:text="@string/anime"
+                    android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/rv_anime"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sv_search"
-                    app:layout_constraintBottom_toTopOf="@id/rv_anime" />
-
+                    app:layout_constraintTop_toBottomOf="@id/svSearch" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_anime"
@@ -98,11 +98,31 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pb_anime" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.getNextAnime(`next`)}"
+                    android:padding="@dimen/dp_8"
+                    android:text="@string/next"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_anime" />
+
+                <TextView
+                    android:id="@+id/tvBackAnime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.getNextAnime(`back`)}"
+                    android:padding="@dimen/dp_8"
+                    android:text="@string/back"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_anime" />
+
                 <ProgressBar
                     android:id="@+id/pb_manga"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:hideIfSaved="@{viewModel.hideProgressBarAnime}"
+                    app:hideIfSaved="@{viewModel.hideProgressBarManga}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rv_anime" />
@@ -118,7 +138,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/rv_manga"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_anime" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvBackAnime" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_manga"
@@ -131,6 +151,26 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_manga" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.getNextManga(`next`)}"
+                    android:padding="@dimen/dp_4"
+                    android:text="@string/next"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_manga" />
+
+                <TextView
+                    android:id="@+id/tvBackManga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.getNextManga(`back`)}"
+                    android:padding="@dimen/dp_4"
+                    android:text="@string/back"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_manga" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline_bottom"

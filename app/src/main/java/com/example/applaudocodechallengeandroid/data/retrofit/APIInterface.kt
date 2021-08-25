@@ -7,6 +7,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 
+/**
+ * All API calls from kitsu.io
+ */
+
 interface ApiInterface {
 
     @GET("anime")
@@ -37,12 +41,22 @@ interface ApiInterface {
     ): Response<MainCharactersResponse>
 
     @GET
-    suspend fun getNextOrBeforeAnimeEpisodes(
+    suspend fun getPrevOrNextAnime(
+        @Url url: String
+    ): Response<MainAnimeResponse>
+
+    @GET
+    suspend fun getPrevOrNextManga(
+        @Url url: String
+    ): Response<MainMangaResponse>
+
+    @GET
+    suspend fun getPrevOrNextAnimeEpisodes(
         @Url url: String
     ): Response<AnimeEpisodesResponse>
 
     @GET
-    suspend fun getNextOrBeforeAnimeCharacters(
+    suspend fun getPrevOrNextAnimeCharacters(
         @Url url: String
     ): Response<MainCharactersResponse>
 
@@ -67,7 +81,6 @@ interface ApiInterface {
     suspend fun getNextOrBeforeMangaCharacters(
         @Url url: String
     ): Response<MainCharactersResponse>
-
 
 
 }

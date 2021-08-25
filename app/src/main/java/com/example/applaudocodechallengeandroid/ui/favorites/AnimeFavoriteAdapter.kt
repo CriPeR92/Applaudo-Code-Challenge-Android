@@ -30,10 +30,4 @@ class AnimeFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
     override fun getItemCount(): Int {
         return list.size
     }
-
-    fun update(newlist: ArrayList<Anime>) {
-        list.clear()
-        list.addAll(newlist)
-        notifyDataSetChanged()
-    }
 }

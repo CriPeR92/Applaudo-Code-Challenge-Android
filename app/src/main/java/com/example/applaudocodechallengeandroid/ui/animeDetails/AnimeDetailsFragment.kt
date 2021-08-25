@@ -18,6 +18,10 @@ import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
+/**
+ * Anime Details Fragment: Shows all details of an Anime selected
+ */
+
 class AnimeDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentAnimeDetailsBinding
@@ -28,8 +32,12 @@ class AnimeDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.selectedAnime.value = Gson().fromJson(arguments?.getString(resources.getString(R.string.anime_)), Anime::class.java)
-        viewModel.isFavorite.value = arguments?.getBoolean(resources.getString(R.string.is_favorite))
+        viewModel.selectedAnime.value = Gson().fromJson(
+            arguments?.getString(resources.getString(R.string.anime_)),
+            Anime::class.java
+        )
+        viewModel.isFavorite.value =
+            arguments?.getBoolean(resources.getString(R.string.is_favorite))
     }
 
     override fun onCreateView(
@@ -52,9 +60,13 @@ class AnimeDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /**
+         * Open youtube app or web browser
+         */
         viewModel.videoUrl.observe(binding.lifecycleOwner!!, {
             val intentApp = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$it"))
-            val intentBrowser = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$it"))
+            val intentBrowser =
+                Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$it"))
             try {
                 this.startActivity(intentApp)
             } catch (ex: ActivityNotFoundException) {
@@ -62,6 +74,21 @@ class AnimeDetailsFragment : Fragment() {
             }
         })
 
+        /**
+         * Share Anime Name
+         */
+        viewModel.share.observe(binding.lifecycleOwner!!, {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, it)
+                type = "text/plain"
+            }
+            startActivity(shareIntent)
+        })
+
+        /**
+         * Genre call observer
+         */
         viewModel.genreResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressGenre.postValue(false)
             genreAdapter = GenreAdapter(
@@ -71,6 +98,9 @@ class AnimeDetailsFragment : Fragment() {
             genreAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * episodes call observer
+         */
         viewModel.episodesResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarEpisodes.postValue(false)
             episodesAdapter = EpisodesAdapter(
@@ -80,6 +110,9 @@ class AnimeDetailsFragment : Fragment() {
             episodesAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * characters call observer
+         */
         viewModel.charactersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarCharacters.postValue(false)
             charactersAdapter = CharactersAdapter(
@@ -89,17 +122,28 @@ class AnimeDetailsFragment : Fragment() {
             charactersAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * Add favorites observer
+         */
         viewModel.addFavorites.observe(binding.lifecycleOwner!!, Observer {
             if (it) {
-                viewModel.sharedPreferencesRepository.saveFavorite(context = this.context,
-                    anime = viewModel.selectedAnime.value, manga = null)
+                viewModel.sharedPreferencesRepository.saveFavorite(
+                    context = this.context,
+                    anime = viewModel.selectedAnime.value, manga = null
+                )
             }
         })
 
+        /**
+         * Show default error message
+         */
         viewModel.error.observe(binding.lifecycleOwner!!, {
             Toast.makeText(this.context, viewModel.errorMessage, Toast.LENGTH_LONG).show()
         })
 
+        /**
+         * Load all adpaters
+         */
         if (!::genreAdapter.isInitialized) {
             viewModel.getGenres()
             genreAdapter = GenreAdapter(ArrayList())

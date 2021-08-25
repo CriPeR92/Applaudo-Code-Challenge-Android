@@ -1,7 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.animeDetails
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
@@ -26,12 +25,17 @@ class DetailsViewModel(
     val hideProgressBarEpisodes = MutableLiveData(false)
     val hideProgressBarCharacters = MutableLiveData(false)
     val videoUrl = LiveEvent<String>()
+    val share = LiveEvent<String>()
     var addFavorites = LiveEvent<Boolean>()
     var isFavorite = LiveEvent<Boolean>()
     var error = LiveEvent<String>()
 
     fun goToYoutube(link: String) {
         videoUrl.postValue(link)
+    }
+
+    fun shareName(name: String) {
+        share.postValue(name)
     }
 
     fun getGenres() {
@@ -86,7 +90,7 @@ class DetailsViewModel(
         if (action == "next" && charactersResponse.value?.links?.next != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 kotlin.runCatching {
-                    animeRepository.getAnimeCharactersBackOrNext(
+                    animeRepository.getAnimeCharactersPrevOrNext(
                         url = charactersResponse.value?.links?.next.toString()
                     )
                 }.onSuccess { response: Response<MainCharactersResponse> ->
@@ -98,7 +102,7 @@ class DetailsViewModel(
         } else if (action == "back" && charactersResponse.value?.links?.prev != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 kotlin.runCatching {
-                    animeRepository.getAnimeCharactersBackOrNext(
+                    animeRepository.getAnimeCharactersPrevOrNext(
                         url = charactersResponse.value?.links?.prev.toString()
                     )
                 }.onSuccess { response: Response<MainCharactersResponse> ->
@@ -110,12 +114,11 @@ class DetailsViewModel(
         }
     }
 
-
     fun getNextEpisodes(action: String) {
         if (action == "next" && episodesResponse.value?.links?.next != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 kotlin.runCatching {
-                    animeRepository.getAnimeEpisodesBackOrNext(
+                    animeRepository.getAnimeEpisodesPrevOrNext(
                         url = episodesResponse.value?.links?.next.toString()
                     )
                 }.onSuccess { response: Response<AnimeEpisodesResponse> ->
@@ -127,7 +130,7 @@ class DetailsViewModel(
         } else if (action == "back" && episodesResponse.value?.links?.prev != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 kotlin.runCatching {
-                    animeRepository.getAnimeEpisodesBackOrNext(
+                    animeRepository.getAnimeEpisodesPrevOrNext(
                         url = episodesResponse.value?.links?.prev.toString()
                     )
                 }.onSuccess { response: Response<AnimeEpisodesResponse> ->

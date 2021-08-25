@@ -1,7 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.mangaDetails
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
@@ -27,8 +26,13 @@ class DetailsMangaViewModel(
     val hideProgressBarChapter = MutableLiveData(false)
     val hideProgressBarCharacters = MutableLiveData(false)
     var addFavorites = LiveEvent<Boolean>()
+    val share = LiveEvent<String>()
     var isFavorite = LiveEvent<Boolean>()
     var error = LiveEvent<String>()
+
+    fun shareName(name: String) {
+        share.postValue(name)
+    }
 
     fun getGenres() {
         hideProgressGenre.postValue(true)

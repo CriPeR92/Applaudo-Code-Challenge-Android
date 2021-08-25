@@ -9,6 +9,10 @@ import com.bumptech.glide.Glide
 import com.example.applaudocodechallengeandroid.R
 
 
+/**
+ * Load image url to ImageView
+ * If image url is null show iconAndroid
+ */
 @BindingAdapter("bind:imageUrl")
 fun loadImage(view: ImageView, imageUrl: String?) {
     Glide.with(view)
@@ -18,17 +22,20 @@ fun loadImage(view: ImageView, imageUrl: String?) {
         .into(view)
 }
 
+/**
+ * Show icon to add to favorites or hide if is already in favorites screen
+ */
 @BindingAdapter("app:setIcon")
 fun setIcon(view: ImageView, isFavorite: Boolean?) {
     if (isFavorite == true) {
         view.visibility = View.GONE
     } else {
-        view.setImageResource(R.drawable.ic_save)
+        view.setImageResource(R.drawable.ic_favorite)
     }
 }
 
 /**
- * bind to know when to hide or show a view
+ * Bind to know when to hide or show a view
  */
 @BindingAdapter("app:hideIfSaved")
 fun hideIfSaved(view: View, number: Boolean) {
@@ -36,7 +43,7 @@ fun hideIfSaved(view: View, number: Boolean) {
 }
 
 /**
- * Function to set adapter in recyclerView and set recyclerView features (GRID)
+ * Function to set adapter in recyclerView and set recyclerView features (Horizontal)
  */
 @BindingAdapter(value = ["setAdapter"])
 fun RecyclerView.bindRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
@@ -47,7 +54,7 @@ fun RecyclerView.bindRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
 }
 
 /**
- * Function to set adapter in recyclerView and set recyclerView features (VERTICAL)
+ * Function to set adapter in recyclerView and set recyclerView features (Vertical)
  */
 @BindingAdapter("app:setRecycler")
 fun setRecycler(view: RecyclerView, adapter: RecyclerView.Adapter<*>) {

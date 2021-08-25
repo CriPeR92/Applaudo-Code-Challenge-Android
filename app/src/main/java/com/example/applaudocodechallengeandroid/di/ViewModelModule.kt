@@ -8,6 +8,10 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+/**
+ * viewModuleModule: Di for ViewModules
+ */
+
 val viewModelModule = module {
     viewModel { HomeViewModel(androidApplication(), get(), get(), get()) }
     viewModel { DetailsViewModel(androidApplication(), get(), get()) }

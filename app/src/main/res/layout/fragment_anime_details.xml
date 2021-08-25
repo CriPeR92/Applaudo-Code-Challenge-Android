@@ -32,27 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnFavorites"
-            android:layout_margin="@dimen/dp_16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:tint="@null"
-            android:backgroundTint="@android:color/background_light"
-            app:setIcon="@{viewModel.isFavorite}"
-            android:onClick="@{() -> viewModel.addToFavorites()}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/ic_save" />
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_32"
-            app:layout_constraintTop_toTopOf="parent"
+            android:padding="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
-            android:paddingTop="@dimen/sp_16">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -136,11 +122,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/dp_16"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_header"
                     android:onClick="@{() -> viewModel.goToYoutube(anime.youtubeVideoId)}"
+                    android:text="@string/trailer"
                     android:textColor="@color/link_blue"
-                    android:text="@string/trailer"/>
+                    android:textSize="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_header" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/dp_8"
+                    android:layout_marginVertical="@dimen/dp_16"
+                    android:onClick="@{() -> viewModel.addToFavorites()}"
+                    android:src="@drawable/ic_favorite"
+                    app:layout_constraintEnd_toStartOf="@id/ivShare"
+                    app:layout_constraintTop_toBottomOf="@id/ll_header"
+                    app:setIcon="@{viewModel.isFavorite}" />
+
+                <ImageView
+                    android:id="@+id/ivShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dp_16"
+                    android:onClick="@{() -> viewModel.shareName(anime.canonicalTitle)}"
+                    android:src="@drawable/ic_baseline_share_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_header" />
 
                 <TextView
                     android:id="@+id/tvGenreTitle"
@@ -296,9 +304,9 @@
                     app:layout_constraintTop_toBottomOf="@id/rvEpisodes" />
 
                 <TextView
-                    android:id="@+id/tvBackEpisodes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/tvBackAnime"
+                    android:layout_width="26dp"
+                    android:layout_height="18dp"
                     android:onClick="@{() -> viewModel.getNextEpisodes(`back`)}"
                     android:text="@string/back"
                     app:layout_constraintStart_toStartOf="parent"
@@ -313,7 +321,7 @@
                     android:text="@string/characters_list"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvBackEpisodes" />
+                    app:layout_constraintTop_toBottomOf="@id/tvBackAnime" />
 
                 <ProgressBar
                     android:id="@+id/pbCharacter"

@@ -1,5 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.mangaDetails
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,10 @@ import com.example.applaudocodechallengeandroid.ui.animeDetails.GenreAdapter
 import com.google.gson.Gson
 import org.koin.android.viewmodel.ext.android.viewModel
 
+/**
+ * Manga Details Fragment: Shows all details of an Manga selected
+ */
+
 class MangaDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentMangaDetailsBinding
@@ -25,8 +30,10 @@ class MangaDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.selectedManga.value = Gson().fromJson(arguments?.getString("manga"), Manga::class.java)
-        viewModel.isFavorite.value = arguments?.getBoolean(resources.getString(R.string.is_favorite), false)
+        viewModel.selectedManga.value =
+            Gson().fromJson(arguments?.getString("manga"), Manga::class.java)
+        viewModel.isFavorite.value =
+            arguments?.getBoolean(resources.getString(R.string.is_favorite), false)
     }
 
     override fun onCreateView(
@@ -49,6 +56,21 @@ class MangaDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /**
+         * Share manga Name
+         */
+        viewModel.share.observe(binding.lifecycleOwner!!, {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, it)
+                type = "text/plain"
+            }
+            startActivity(shareIntent)
+        })
+
+        /**
+         * Genre call observer
+         */
         viewModel.genreResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressGenre.postValue(false)
             genreAdapter = GenreAdapter(
@@ -58,6 +80,9 @@ class MangaDetailsFragment : Fragment() {
             genreAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * chapters call observer
+         */
         viewModel.chaptersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarChapter.postValue(false)
             chapterAdapter = ChaptersAdapter(
@@ -67,6 +92,9 @@ class MangaDetailsFragment : Fragment() {
             chapterAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * Characters call observer
+         */
         viewModel.charactersResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarCharacters.postValue(false)
             charactersAdapter = CharactersAdapter(
@@ -76,6 +104,9 @@ class MangaDetailsFragment : Fragment() {
             charactersAdapter.notifyDataSetChanged()
         })
 
+        /**
+         * add favorites observer
+         */
         viewModel.addFavorites.observe(binding.lifecycleOwner!!, {
             if (it) {
                 viewModel.sharedPreferencesRepository.saveFavorite(
@@ -85,10 +116,16 @@ class MangaDetailsFragment : Fragment() {
             }
         })
 
+        /**
+         * Show default error message
+         */
         viewModel.error.observe(binding.lifecycleOwner!!, {
             Toast.makeText(this.context, viewModel.errorMessage, Toast.LENGTH_LONG).show()
         })
 
+        /**
+         * Adapters
+         */
         if (!::genreAdapter.isInitialized) {
             viewModel.getGenres()
             genreAdapter = GenreAdapter(ArrayList())
