@@ -10,12 +10,15 @@ import com.example.applaudocodechallengeandroid.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class DetailsViewModel(
-    application: Application,
-    private val animeRepository: AnimeRepository,
-    val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application) {
+class DetailsViewModel @Inject constructor() : BaseViewModel() {
+
+    @Inject
+    lateinit var animeRepository: AnimeRepository
+
+    @Inject
+    lateinit var sharedPreferencesRepository: SharedPreferencesRepository
 
     var selectedAnime = LiveEvent<Anime>()
     var genreResponse = LiveEvent<GenreResponse?>()

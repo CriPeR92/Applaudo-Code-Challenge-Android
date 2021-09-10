@@ -10,13 +10,18 @@ import com.example.applaudocodechallengeandroid.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class DetailsMangaViewModel(
-    application: Application,
-    private val animeRepository: AnimeRepository,
-    private val mangaRepository: MangaRepository,
-    val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application) {
+class DetailsMangaViewModel @Inject constructor() : BaseViewModel() {
+
+    @Inject
+    lateinit var animeRepository: AnimeRepository
+
+    @Inject
+    lateinit var mangaRepository: MangaRepository
+
+    @Inject
+    lateinit var sharedPreferencesRepository: SharedPreferencesRepository
 
     var selectedManga = LiveEvent<Manga>()
     var genreResponse = LiveEvent<GenreResponse?>()

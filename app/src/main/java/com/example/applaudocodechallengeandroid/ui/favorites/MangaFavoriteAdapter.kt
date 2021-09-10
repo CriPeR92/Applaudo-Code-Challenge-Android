@@ -7,10 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.applaudocodechallengeandroid.databinding.ItemMangaFavoriteBinding
 import com.example.applaudocodechallengeandroid.model.Manga
 
-class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: ArrayList<Manga>) :
+class MangaFavoriteAdapter(private var viewModel: FavoritesViewModel, var list: ArrayList<Manga>) :
     RecyclerView.Adapter<MangaFavoriteAdapter.MangaFavoriteAdapterViewHolder>() {
 
-    private lateinit var favoriteViewModel: FavoritesViewModel
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -18,12 +17,11 @@ class MangaFavoriteAdapter(private var fragment: FavoritesFragment, var list: Ar
     ): MangaFavoriteAdapterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemMangaFavoriteBinding.inflate(layoutInflater)
-        favoriteViewModel = ViewModelProvider(fragment).get(FavoritesViewModel::class.java)
         return MangaFavoriteAdapterViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MangaFavoriteAdapterViewHolder, position: Int) {
-        holder.binding.viewModelFavorite = favoriteViewModel
+        holder.binding.viewModelFavorite = viewModel
         holder.binding.manga = list[position]
     }
 

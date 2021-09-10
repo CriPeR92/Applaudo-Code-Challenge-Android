@@ -1,5 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.applaudocodechallengeandroid.R
 import com.example.applaudocodechallengeandroid.databinding.FragmentHomeBinding
+import com.example.applaudocodechallengeandroid.ui.MainActivity
 import com.google.gson.Gson
-import org.koin.android.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 /**
  * Home Fragment: Shows applications main view, list of anime and manga
@@ -25,7 +27,15 @@ class HomeFragment : Fragment() {
     private lateinit var mangaAdapter: MangaAdapter
     private lateinit var animeAdapter: AnimeAdapter
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModel()
+
+    @Inject
+    lateinit var viewModel: HomeViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (activity as MainActivity).mainComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +48,7 @@ class HomeFragment : Fragment() {
             container,
             false
         )
-        binding.viewModel = this.viewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -52,7 +62,7 @@ class HomeFragment : Fragment() {
         viewModel.animeResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarAnime.postValue(false)
             animeAdapter = AnimeAdapter(
-                this,
+                viewModel,
                 it?.data ?: ArrayList()
             )
             binding.animeAdapter = animeAdapter
@@ -65,7 +75,7 @@ class HomeFragment : Fragment() {
         viewModel.mangaResponse.observe(binding.lifecycleOwner!!, {
             viewModel.hideProgressBarManga.postValue(false)
             mangaAdapter = MangaAdapter(
-                this,
+                viewModel,
                 it?.data ?: ArrayList()
             )
             binding.mangaAdapter = mangaAdapter
@@ -137,7 +147,7 @@ class HomeFragment : Fragment() {
          */
         if (!::animeAdapter.isInitialized) {
             viewModel.getSeries(resources.getString(R.string.default_search))
-            animeAdapter = AnimeAdapter(this, ArrayList())
+            animeAdapter = AnimeAdapter(viewModel, ArrayList())
             binding.animeAdapter = animeAdapter
         } else {
             binding.animeAdapter = animeAdapter
@@ -145,7 +155,7 @@ class HomeFragment : Fragment() {
 
         if (!::mangaAdapter.isInitialized) {
             viewModel.getManga(resources.getString(R.string.default_search))
-            mangaAdapter = MangaAdapter(this, ArrayList())
+            mangaAdapter = MangaAdapter(viewModel, ArrayList())
             binding.mangaAdapter = mangaAdapter
         } else {
             binding.mangaAdapter = mangaAdapter

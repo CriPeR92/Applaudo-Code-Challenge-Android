@@ -1,16 +1,16 @@
 package com.example.applaudocodechallengeandroid.ui.favorites
 
-import android.app.Application
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
 import com.example.applaudocodechallengeandroid.data.repository.SharedPreferencesRepository
 import com.example.applaudocodechallengeandroid.model.Anime
 import com.example.applaudocodechallengeandroid.model.Manga
+import javax.inject.Inject
 
-class FavoritesViewModel(
-    application: Application,
-    val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application) {
+class FavoritesViewModel @Inject constructor() : BaseViewModel() {
+
+    @Inject
+    lateinit var sharedPreferencesRepository: SharedPreferencesRepository
 
     var animeSelected = LiveEvent<Anime>()
     var mangaSelected = LiveEvent<Manga>()

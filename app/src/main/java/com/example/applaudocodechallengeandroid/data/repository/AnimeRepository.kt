@@ -3,13 +3,18 @@ package com.example.applaudocodechallengeandroid.data.repository
 import com.example.applaudocodechallengeandroid.data.retrofit.ApiInterface
 import com.example.applaudocodechallengeandroid.model.*
 import retrofit2.Response
+import javax.inject.Inject
+
 
 /**
  * AnimeRepository: Contains all anime calls to the API
  * GetAnime, GetAnimeCharacters, GetAnimeEpisodes, Get next or previous
  */
 
-class AnimeRepository(private val api: ApiInterface) {
+class AnimeRepository @Inject constructor() {
+
+    @Inject
+    lateinit var api: ApiInterface
 
     /**
      * Search animes by query "search"

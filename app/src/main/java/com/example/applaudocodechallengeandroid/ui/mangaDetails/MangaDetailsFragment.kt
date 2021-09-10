@@ -1,5 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.mangaDetails
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,10 +12,11 @@ import androidx.fragment.app.Fragment
 import com.example.applaudocodechallengeandroid.R
 import com.example.applaudocodechallengeandroid.databinding.FragmentMangaDetailsBinding
 import com.example.applaudocodechallengeandroid.model.Manga
+import com.example.applaudocodechallengeandroid.ui.MainActivity
 import com.example.applaudocodechallengeandroid.ui.animeDetails.CharactersAdapter
 import com.example.applaudocodechallengeandroid.ui.animeDetails.GenreAdapter
 import com.google.gson.Gson
-import org.koin.android.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 /**
  * Manga Details Fragment: Shows all details of an Manga selected
@@ -22,11 +24,18 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MangaDetailsFragment : Fragment() {
 
+    @Inject
+    lateinit var viewModel: DetailsMangaViewModel
+
     private lateinit var binding: FragmentMangaDetailsBinding
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var chapterAdapter: ChaptersAdapter
     private lateinit var charactersAdapter: CharactersAdapter
-    private val viewModel: DetailsMangaViewModel by viewModel()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainActivity).mainComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

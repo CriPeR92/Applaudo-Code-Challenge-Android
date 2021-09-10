@@ -7,15 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.applaudocodechallengeandroid.databinding.ItemAnimeFavoriteBinding
 import com.example.applaudocodechallengeandroid.model.Anime
 
-class AnimeFavoriteAdapter(private var fragment: FavoritesFragment, var list: ArrayList<Anime>) :
+class AnimeFavoriteAdapter(private var viewModel: FavoritesViewModel, var list: ArrayList<Anime>) :
     RecyclerView.Adapter<AnimeFavoriteAdapter.AnimeFavoriteViewHolder>() {
 
-    private lateinit var viewModel: FavoritesViewModel
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimeFavoriteViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemAnimeFavoriteBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(fragment).get(FavoritesViewModel::class.java)
         return AnimeFavoriteViewHolder(binding)
     }
 

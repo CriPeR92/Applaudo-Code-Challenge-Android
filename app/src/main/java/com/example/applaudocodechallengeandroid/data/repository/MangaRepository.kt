@@ -5,8 +5,12 @@ import com.example.applaudocodechallengeandroid.model.MainCharactersResponse
 import com.example.applaudocodechallengeandroid.model.MainMangaResponse
 import com.example.applaudocodechallengeandroid.model.MangaChapterResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class MangaRepository(private val api: ApiInterface) {
+class MangaRepository @Inject constructor() {
+
+    @Inject
+    lateinit var api: ApiInterface
 
     /**
      * Search mangas by query "search"

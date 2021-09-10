@@ -82,5 +82,4 @@ interface ApiInterface {
         @Url url: String
     ): Response<MainCharactersResponse>
 
-
 }
