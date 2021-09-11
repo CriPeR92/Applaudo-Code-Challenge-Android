@@ -1,23 +1,26 @@
 package com.example.applaudocodechallengeandroid.ui.home
 
-import android.app.Application
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
 import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class HomeViewModel(
-    application: Application,
-    private val animeRepository: AnimeRepository,
-    private val mangaRepository: MangaRepository,
-    val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application) {
+class HomeViewModel @Inject constructor() : BaseViewModel() {
+
+    @Inject
+    lateinit var animeRepository: AnimeRepository
+
+    @Inject
+    lateinit var mangaRepository: MangaRepository
+
+    @Inject
+    lateinit var sharedPreferencesRepository: SharedPreferencesRepository
 
     var animeResponse = LiveEvent<MainAnimeResponse?>()
     var mangaResponse = LiveEvent<MainMangaResponse?>()
@@ -27,6 +30,7 @@ class HomeViewModel(
     val hideProgressBarManga = MutableLiveData(false)
     var showFavorites = LiveEvent<Boolean>()
     var error = LiveEvent<String>()
+    lateinit var animeDispose: Disposable
 
     fun getQueryTextListener(): SearchView.OnQueryTextListener {
         return object : SearchView.OnQueryTextListener {
@@ -42,31 +46,24 @@ class HomeViewModel(
     }
 
     fun getSeries(query: String) {
-        hideProgressBarAnime.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                animeRepository.getSeries(query)
-            }.onSuccess { status: Response<MainAnimeResponse> ->
-                onSuccessAnime(status.body())
-            }.onFailure {
+        animeDispose = animeRepository.getSeries(query)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { hideProgressBarAnime.postValue(true) }
+            .subscribe({
+                onSuccessAnime(it)
                 hideProgressBarAnime.postValue(false)
-                onFailed(errorMessage)
-            }
-        }
+            }, { onFailed(errorMessage) })
     }
 
 
     fun getManga(query: String) {
-        hideProgressBarManga.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                mangaRepository.getManga(query)
-            }.onSuccess { status: Response<MainMangaResponse> ->
-                onSuccessManga(status.body())
-            }.onFailure {
-                hideProgressBarManga.postValue(false)
-                onFailed(errorMessage)
-            }
+        mangaRepository.run {
+            getManga(query)
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressBarManga.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessManga(it) }, { onFailed(errorMessage) })
         }
     }
 
@@ -84,30 +81,23 @@ class HomeViewModel(
     fun getNextAnime(action: String) {
 
         if (action == "next" && animeResponse.value?.links?.next != null) {
-            hideProgressBarAnime.postValue(true)
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimePrevOrNext(
-                        url = animeResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<MainAnimeResponse> ->
-                    onSuccessAnime(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimePrevOrNext(url = animeResponse.value?.links?.next.toString())
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { hideProgressBarAnime.postValue(true) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnime(it) }, { onFailed(errorMessage) })
             }
+
         } else if (action == "back" && animeResponse.value?.links?.prev != null) {
-            hideProgressBarAnime.postValue(true)
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimePrevOrNext(
-                        url = animeResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<MainAnimeResponse> ->
-                    onSuccessAnime(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimePrevOrNext(
+                    url = animeResponse.value?.links?.prev.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { hideProgressBarAnime.postValue(true) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnime(it) }, { onFailed(errorMessage) })
             }
         }
     }
@@ -115,30 +105,24 @@ class HomeViewModel(
     fun getNextManga(action: String) {
 
         if (action == "next" && mangaResponse.value?.links?.next != null) {
-            hideProgressBarManga.postValue(true)
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaPrevOrNext(
-                        url = mangaResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<MainMangaResponse> ->
-                    onSuccessManga(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                getMangaPrevOrNext(
+                    url = mangaResponse.value?.links?.next.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { hideProgressBarAnime.postValue(true) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessManga(it) }, { onFailed(errorMessage) })
             }
         } else if (action == "back" && mangaResponse.value?.links?.prev != null) {
-            hideProgressBarManga.postValue(true)
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaPrevOrNext(
-                        url = mangaResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<MainMangaResponse> ->
-                    onSuccessManga(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                getMangaPrevOrNext(
+                    url = mangaResponse.value?.links?.prev.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { hideProgressBarAnime.postValue(true) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessManga(it) }, { onFailed(errorMessage) })
             }
         }
     }

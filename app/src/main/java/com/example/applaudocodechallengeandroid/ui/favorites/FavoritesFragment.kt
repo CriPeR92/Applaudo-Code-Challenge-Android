@@ -1,5 +1,6 @@
 package com.example.applaudocodechallengeandroid.ui.favorites
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +14,10 @@ import com.example.applaudocodechallengeandroid.R
 import com.example.applaudocodechallengeandroid.databinding.FragmentFavoritesBinding
 import com.example.applaudocodechallengeandroid.model.Anime
 import com.example.applaudocodechallengeandroid.model.Manga
+import com.example.applaudocodechallengeandroid.ui.MainActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import org.koin.android.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 /**
  * Favorites Fragment: Show all anime and manga saved before as favorites
@@ -26,11 +28,19 @@ class FavoritesFragment : Fragment() {
     lateinit var animeAdapter: AnimeFavoriteAdapter
     lateinit var mangaAdapter: MangaFavoriteAdapter
     private lateinit var binding: FragmentFavoritesBinding
-    private val viewModel: FavoritesViewModel by viewModel()
     private val typeAnime = object : TypeToken<ArrayList<Anime>>() {}.type
     private val typeManga = object : TypeToken<ArrayList<Manga>>() {}.type
     var animeList: ArrayList<Anime>? = null
     var mangaList: ArrayList<Manga>? = null
+
+    @Inject
+    lateinit var viewModel: FavoritesViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (activity as MainActivity).mainComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +62,8 @@ class FavoritesFragment : Fragment() {
             false
         )
         binding.viewModel = this.viewModel
-        binding.animeAdapter = AnimeFavoriteAdapter(this, animeList ?: ArrayList())
-        binding.mangaAdapter = MangaFavoriteAdapter(this, mangaList ?: ArrayList())
+        binding.animeAdapter = AnimeFavoriteAdapter(viewModel, animeList ?: ArrayList())
+        binding.mangaAdapter = MangaFavoriteAdapter(viewModel, mangaList ?: ArrayList())
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -100,7 +110,7 @@ class FavoritesFragment : Fragment() {
                 it.id == deleteAnime.id
             }
             viewModel.sharedPreferencesRepository.deleteAnime(context = context, animeList)
-            animeAdapter = AnimeFavoriteAdapter(this, animeList ?: ArrayList())
+            animeAdapter = AnimeFavoriteAdapter(viewModel, animeList ?: ArrayList())
             animeAdapter.notifyDataSetChanged()
             binding.animeAdapter = animeAdapter
             Toast.makeText(this.context, R.string.removed, Toast.LENGTH_LONG).show()
@@ -114,7 +124,7 @@ class FavoritesFragment : Fragment() {
                 it.id == deleteManga.id
             }
             viewModel.sharedPreferencesRepository.deleteManga(context = context, mangaList)
-            mangaAdapter = MangaFavoriteAdapter(this, mangaList ?: ArrayList())
+            mangaAdapter = MangaFavoriteAdapter(viewModel, mangaList ?: ArrayList())
             mangaAdapter.notifyDataSetChanged()
             binding.mangaAdapter = mangaAdapter
             Toast.makeText(this.context, R.string.removed, Toast.LENGTH_LONG).show()

@@ -8,12 +8,13 @@ import com.example.applaudocodechallengeandroid.model.Anime
 import com.example.applaudocodechallengeandroid.model.Manga
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import javax.inject.Inject
 
 /**
  * Repository to save all anime or manga marked as favorites using SharedPreferences
  */
 
-class SharedPreferencesRepository {
+class SharedPreferencesRepository @Inject constructor() {
 
     private var prefs: SharedPreferences? = null
     private var animeList: ArrayList<Anime>? = null

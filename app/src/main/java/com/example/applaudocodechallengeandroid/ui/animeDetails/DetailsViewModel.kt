@@ -1,21 +1,21 @@
 package com.example.applaudocodechallengeandroid.ui.animeDetails
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
 import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class DetailsViewModel(
-    application: Application,
-    private val animeRepository: AnimeRepository,
-    val sharedPreferencesRepository: SharedPreferencesRepository
-) : BaseViewModel(application) {
+class DetailsViewModel @Inject constructor() : BaseViewModel() {
+
+    @Inject
+    lateinit var animeRepository: AnimeRepository
+
+    @Inject
+    lateinit var sharedPreferencesRepository: SharedPreferencesRepository
 
     var selectedAnime = LiveEvent<Anime>()
     var genreResponse = LiveEvent<GenreResponse?>()
@@ -39,105 +39,87 @@ class DetailsViewModel(
     }
 
     fun getGenres() {
-        hideProgressGenre.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                animeRepository.getGenre(
-                    id = selectedAnime.value?.id.toString(),
-                    type = selectedAnime.value?.type.toString()
-                )
-            }.onSuccess { response: Response<GenreResponse> ->
-                onSuccessGenre(response.body())
-            }.onFailure {
-                hideProgressGenre.postValue(false)
-                onFailed(errorMessage)
-            }
+        animeRepository.run {
+            getGenre(
+                id = selectedAnime.value?.id.toString(),
+                type = selectedAnime.value?.type.toString()
+            )
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressGenre.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessGenre(it) }, {
+                    hideProgressGenre.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
     }
 
     fun getEpisodes() {
-        hideProgressBarEpisodes.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                animeRepository.getAnimeEpisodes(id = selectedAnime.value?.id.toString())
-            }.onSuccess { response: Response<AnimeEpisodesResponse> ->
-                onSuccessAnimeEpisode(response.body())
-            }.onFailure {
-                hideProgressBarEpisodes.postValue(false)
-                onFailed(errorMessage)
-            }
+        animeRepository.run {
+            getAnimeEpisodes(id = selectedAnime.value?.id.toString())
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressBarEpisodes.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessAnimeEpisode(it) }, {
+                    hideProgressBarEpisodes.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
     }
 
     fun getCharacters() {
-        hideProgressBarCharacters.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                animeRepository.getAnimeCharacters(
-                    animeId = selectedAnime.value?.id.toString(),
-                )
-            }.onSuccess { response: Response<MainCharactersResponse> ->
-                onSuccessAnimeCharacter(response.body())
-            }.onFailure {
-                hideProgressBarCharacters.postValue(false)
-                onFailed(errorMessage)
-            }
+        animeRepository.run {
+            getAnimeCharacters(animeId = selectedAnime.value?.id.toString())
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressBarCharacters.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessAnimeCharacter(it) }, {
+                    hideProgressBarCharacters.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
-
     }
 
     fun getNextCharacters(action: String) {
         if (action == "next" && charactersResponse.value?.links?.next != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimeCharactersPrevOrNext(
-                        url = charactersResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<MainCharactersResponse> ->
-                    onSuccessAnimeCharacter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimeCharactersPrevOrNext(url = charactersResponse.value?.links?.next.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnimeCharacter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         } else if (action == "back" && charactersResponse.value?.links?.prev != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimeCharactersPrevOrNext(
-                        url = charactersResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<MainCharactersResponse> ->
-                    onSuccessAnimeCharacter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimeCharactersPrevOrNext(url = charactersResponse.value?.links?.prev.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnimeCharacter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         }
     }
 
     fun getNextEpisodes(action: String) {
         if (action == "next" && episodesResponse.value?.links?.next != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimeEpisodesPrevOrNext(
-                        url = episodesResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<AnimeEpisodesResponse> ->
-                    onSuccessAnimeEpisode(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimeEpisodesPrevOrNext(url = episodesResponse.value?.links?.next.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnimeEpisode(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         } else if (action == "back" && episodesResponse.value?.links?.prev != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    animeRepository.getAnimeEpisodesPrevOrNext(
-                        url = episodesResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<AnimeEpisodesResponse> ->
-                    onSuccessAnimeEpisode(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            animeRepository.run {
+                getAnimeEpisodesPrevOrNext(url = episodesResponse.value?.links?.prev.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessAnimeEpisode(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         }
     }

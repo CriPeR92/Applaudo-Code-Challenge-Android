@@ -1,6 +1,7 @@
 package com.example.applaudocodechallengeandroid.ui.animeDetails
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,8 +15,9 @@ import androidx.lifecycle.Observer
 import com.example.applaudocodechallengeandroid.R
 import com.example.applaudocodechallengeandroid.databinding.FragmentAnimeDetailsBinding
 import com.example.applaudocodechallengeandroid.model.*
+import com.example.applaudocodechallengeandroid.ui.MainActivity
 import com.google.gson.Gson
-import org.koin.android.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 
 /**
@@ -28,7 +30,14 @@ class AnimeDetailsFragment : Fragment() {
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var episodesAdapter: EpisodesAdapter
     private lateinit var charactersAdapter: CharactersAdapter
-    private val viewModel: DetailsViewModel by viewModel()
+
+    @Inject
+    lateinit var viewModel: DetailsViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainActivity).mainComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

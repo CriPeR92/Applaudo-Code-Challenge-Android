@@ -2,76 +2,84 @@ package com.example.applaudocodechallengeandroid.data.repository
 
 import com.example.applaudocodechallengeandroid.data.retrofit.ApiInterface
 import com.example.applaudocodechallengeandroid.model.*
-import retrofit2.Response
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+
 
 /**
  * AnimeRepository: Contains all anime calls to the API
  * GetAnime, GetAnimeCharacters, GetAnimeEpisodes, Get next or previous
  */
 
-class AnimeRepository(private val api: ApiInterface) {
+class AnimeRepository @Inject constructor() {
+
+    @Inject
+    lateinit var api: ApiInterface
 
     /**
      * Search animes by query "search"
      */
-    suspend fun getSeries(
+    fun getSeries(
         search: String
-    ): Response<MainAnimeResponse> {
-        return api.getSeries(search)
+    ): Observable<MainAnimeResponse> {
+        return api.getSeries(search).subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     /**
      * Get all anime characters from a specific anime "id"
      */
-    suspend fun getAnimeCharacters(
+    fun getAnimeCharacters(
         animeId: String
-    ): Response<MainCharactersResponse> {
+    ): Observable<MainCharactersResponse> {
         return api.getAnimeCharacters(id = animeId)
     }
 
     /**
      * Get all anime episodes from a specific anime "id"
      */
-    suspend fun getAnimeEpisodes(
+    fun getAnimeEpisodes(
         id: String
-    ): Response<AnimeEpisodesResponse> {
+    ): Observable<AnimeEpisodesResponse> {
         return api.getAnimeEpisodes(id = id)
     }
 
     /**
      * Get next or previous page of an anime search
      */
-    suspend fun getAnimePrevOrNext(
+    fun getAnimePrevOrNext(
         url: String
-    ): Response<MainAnimeResponse> {
+    ): Observable<MainAnimeResponse> {
         return api.getPrevOrNextAnime(url = url)
     }
 
     /**
      * Get next or previous page of an animeEpisodes search
      */
-    suspend fun getAnimeEpisodesPrevOrNext(
+    fun getAnimeEpisodesPrevOrNext(
         url: String
-    ): Response<AnimeEpisodesResponse> {
+    ): Observable<AnimeEpisodesResponse> {
         return api.getPrevOrNextAnimeEpisodes(url = url)
     }
 
     /**
      * Get next or previous page of an animeCharacters search
      */
-    suspend fun getAnimeCharactersPrevOrNext(
+    fun getAnimeCharactersPrevOrNext(
         url: String
-    ): Response<MainCharactersResponse> {
+    ): Observable<MainCharactersResponse> {
         return api.getPrevOrNextAnimeCharacters(url = url)
     }
 
     /**
      * Get all genres from a specific anime "id" and type "anime or manga"
      */
-    suspend fun getGenre(
+    fun getGenre(
         id: String,
         type: String
-    ): Response<GenreResponse> {
+    ): Observable<GenreResponse> {
         return api.getGenres(id = id, type = type)
     }
 }
