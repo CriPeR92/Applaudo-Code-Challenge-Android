@@ -67,6 +67,7 @@ class HomeFragment : Fragment() {
             )
             binding.animeAdapter = animeAdapter
             animeAdapter.notifyDataSetChanged()
+            viewModel.animeDispose.dispose()
         })
 
         /**

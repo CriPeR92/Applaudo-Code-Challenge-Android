@@ -1,7 +1,7 @@
 package com.example.applaudocodechallengeandroid.data.retrofit
 
 import com.example.applaudocodechallengeandroid.model.*
-import retrofit2.Response
+import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -14,72 +14,72 @@ import retrofit2.http.Url
 interface ApiInterface {
 
     @GET("anime")
-    suspend fun getSeries(
+    fun getSeries(
         @Query("filter[text]") text: String
-    ): Response<MainAnimeResponse>
+    ): Observable<MainAnimeResponse>
 
     @GET("manga")
-    suspend fun getManga(
+    fun getManga(
         @Query("filter[text]") text: String
-    ): Response<MainMangaResponse>
+    ): Observable<MainMangaResponse>
 
     @GET("{type}/{id}/genres")
-    suspend fun getGenres(
+    fun getGenres(
         @Path(value = "type") type: String,
         @Path(value = "id") id: String
-    ): Response<GenreResponse>
+    ): Observable<GenreResponse>
 
     @GET("episodes")
-    suspend fun getAnimeEpisodes(
+    fun getAnimeEpisodes(
         @Query("filter[mediaId]") id: String,
-    ): Response<AnimeEpisodesResponse>
+    ): Observable<AnimeEpisodesResponse>
 
     @GET("anime-characters")
-    suspend fun getAnimeCharacters(
+    fun getAnimeCharacters(
         @Query("include") include: String = "character",
         @Query("filter[animeId]") id: String
-    ): Response<MainCharactersResponse>
+    ): Observable<MainCharactersResponse>
 
     @GET
-    suspend fun getPrevOrNextAnime(
+    fun getPrevOrNextAnime(
         @Url url: String
-    ): Response<MainAnimeResponse>
+    ): Observable<MainAnimeResponse>
 
     @GET
-    suspend fun getPrevOrNextManga(
+    fun getPrevOrNextManga(
         @Url url: String
-    ): Response<MainMangaResponse>
+    ): Observable<MainMangaResponse>
 
     @GET
-    suspend fun getPrevOrNextAnimeEpisodes(
+    fun getPrevOrNextAnimeEpisodes(
         @Url url: String
-    ): Response<AnimeEpisodesResponse>
+    ): Observable<AnimeEpisodesResponse>
 
     @GET
-    suspend fun getPrevOrNextAnimeCharacters(
+    fun getPrevOrNextAnimeCharacters(
         @Url url: String
-    ): Response<MainCharactersResponse>
+    ): Observable<MainCharactersResponse>
 
 
     @GET("chapters")
-    suspend fun getMangaChapters(
+    fun getMangaChapters(
         @Query("filter[mangaId]") id: String,
-    ): Response<MangaChapterResponse>
+    ): Observable<MangaChapterResponse>
 
     @GET("manga-characters")
-    suspend fun getMangaCharacters(
+    fun getMangaCharacters(
         @Query("include") include: String = "character",
         @Query("filter[mangaId]") id: String
-    ): Response<MainCharactersResponse>
+    ): Observable<MainCharactersResponse>
 
     @GET
-    suspend fun getNextOrBeforeMangaChapters(
+    fun getNextOrBeforeMangaChapters(
         @Url url: String
-    ): Response<MangaChapterResponse>
+    ): Observable<MangaChapterResponse>
 
     @GET
-    suspend fun getNextOrBeforeMangaCharacters(
+    fun getNextOrBeforeMangaCharacters(
         @Url url: String
-    ): Response<MainCharactersResponse>
+    ): Observable<MainCharactersResponse>
 
 }

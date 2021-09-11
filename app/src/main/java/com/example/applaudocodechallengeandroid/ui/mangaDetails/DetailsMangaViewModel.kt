@@ -1,15 +1,12 @@
 package com.example.applaudocodechallengeandroid.ui.mangaDetails
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.applaudocodechallengeandroid.base.BaseViewModel
 import com.example.applaudocodechallengeandroid.base.LiveEvent
 import com.example.applaudocodechallengeandroid.data.repository.*
 import com.example.applaudocodechallengeandroid.model.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class DetailsMangaViewModel @Inject constructor() : BaseViewModel() {
@@ -40,78 +37,73 @@ class DetailsMangaViewModel @Inject constructor() : BaseViewModel() {
     }
 
     fun getGenres() {
-        hideProgressGenre.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                animeRepository.getGenre(
-                    id = selectedManga.value?.id.toString(),
-                    type = selectedManga.value?.type.toString()
-                )
-            }.onSuccess { response: Response<GenreResponse> ->
-                onSuccessGenre(response.body())
-            }.onFailure {
-                hideProgressGenre.postValue(false)
-                onFailed(errorMessage)
-            }
+        animeRepository.run {
+            getGenre(
+                id = selectedManga.value?.id.toString(),
+                type = selectedManga.value?.type.toString()
+            )
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressGenre.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessGenre(it) }, {
+                    hideProgressGenre.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
     }
 
     fun getChapters() {
-        hideProgressBarChapter.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                mangaRepository.getMangaChapters(
-                    id = selectedManga.value?.id.toString(),
-                )
-            }.onSuccess { response: Response<MangaChapterResponse> ->
-                onSuccessMangaChapter(response.body())
-            }.onFailure {
-                hideProgressBarChapter.postValue(false)
-                onFailed(errorMessage)
-            }
+        mangaRepository.run {
+            getMangaChapters(
+                id = selectedManga.value?.id.toString(),
+            )
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressBarChapter.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessMangaChapter(it) }, {
+                    hideProgressBarChapter.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
     }
 
     fun getCharacters() {
-        hideProgressBarCharacters.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                mangaRepository.getMangaCharacters(
-                    mangaId = selectedManga.value?.id.toString(),
-                )
-            }.onSuccess { response: Response<MainCharactersResponse> ->
-                onSuccessMangaCharacter(response.body())
-            }.onFailure {
-                hideProgressBarCharacters.postValue(false)
-                onFailed(errorMessage)
-            }
+        mangaRepository.run {
+            mangaRepository.getMangaCharacters(
+                mangaId = selectedManga.value?.id.toString(),
+            )
+                .subscribeOn(Schedulers.io())
+                .doOnNext { hideProgressBarCharacters.postValue(true) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccessMangaCharacter(it) }, {
+                    hideProgressBarCharacters.postValue(false)
+                    onFailed(errorMessage)
+                })
         }
     }
 
     fun getNextCharacters(action: String) {
         if (action == "next" && charactersResponse.value?.links?.next != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaCharactersBackOrNext(
-                        url = charactersResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<MainCharactersResponse> ->
-                    onSuccessMangaCharacter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                mangaRepository.getMangaCharactersBackOrNext(
+                    url = charactersResponse.value?.links?.next.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessMangaCharacter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         } else if (action == "back" && charactersResponse.value?.links?.prev != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaCharactersBackOrNext(
-                        url = charactersResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<MainCharactersResponse> ->
-                    onSuccessMangaCharacter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                mangaRepository.getMangaCharactersBackOrNext(
+                    url = charactersResponse.value?.links?.prev.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessMangaCharacter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         }
     }
@@ -119,31 +111,28 @@ class DetailsMangaViewModel @Inject constructor() : BaseViewModel() {
 
     fun getNextChapters(action: String) {
         if (action == "next" && chaptersResponse.value?.links?.next != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaChaptersBackOrNext(
-                        url = chaptersResponse.value?.links?.next.toString()
-                    )
-                }.onSuccess { response: Response<MangaChapterResponse> ->
-                    onSuccessMangaChapter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                mangaRepository.getMangaChaptersBackOrNext(
+                    url = chaptersResponse.value?.links?.next.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessMangaChapter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         } else if (action == "back" && chaptersResponse.value?.links?.prev != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                kotlin.runCatching {
-                    mangaRepository.getMangaChaptersBackOrNext(
-                        url = chaptersResponse.value?.links?.prev.toString()
-                    )
-                }.onSuccess { response: Response<MangaChapterResponse> ->
-                    onSuccessMangaChapter(response.body())
-                }.onFailure {
-                    onFailed(errorMessage)
-                }
+            mangaRepository.run {
+                mangaRepository.getMangaChaptersBackOrNext(
+                    url = chaptersResponse.value?.links?.prev.toString()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ onSuccessMangaChapter(it) }, {
+                        onFailed(errorMessage)
+                    })
             }
         }
-
     }
 
     fun addToFavorites() {
